@@ -1,0 +1,340 @@
+# XBMC Media Center language file
+# Addon Name: Tvheadend HTSP Client
+# Addon id: pvr.hts
+# Addon version: 1.6.11
+# Addon Provider: Lars Op den Kamp, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#settings labels
+
+msgctxt "#30000"
+msgid "Stereo"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Demo Mode 2"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Demo Mode 3"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Volume Settings"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Speaker configuration"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Enable speaker gain correction"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Enable speaker distance correction"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Enable improved standart stereo processing"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Bass Crossover Frequencies..."
+msgstr ""
+
+msgctxt "#30021"
+msgid "Speaker Gain..."
+msgstr ""
+
+msgctxt "#30022"
+msgid "Speaker Distance..."
+msgstr ""
+
+msgctxt "#30023"
+msgid "Subwoofer..."
+msgstr ""
+
+msgctxt "#30024"
+msgid "Equalizer..."
+msgstr ""
+
+msgctxt "#30025"
+msgid "Automatic Speaker Configuration..."
+msgstr ""
+
+msgctxt "#30029"
+msgid "Speaker gain"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Speaker gain test sound"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Front left"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Front right"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Side left"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Side right"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Back left"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Back right"
+msgstr ""
+
+msgctxt "#30037"
+msgid "Front center"
+msgstr ""
+
+msgctxt "#30038"
+msgid "LFE"
+msgstr ""
+
+msgctxt "#30039"
+msgid "Back center"
+msgstr ""
+
+msgctxt "#30040"
+msgid "Distance Unit"
+msgstr ""
+
+msgctxt "#30041"
+msgid "Back Left to right"
+msgstr ""
+
+msgctxt "#30042"
+msgid "No delay"
+msgstr ""
+
+msgctxt "#30043"
+msgid "Seconds"
+msgstr ""
+
+msgctxt "#30044"
+msgid "Milliseconds"
+msgstr ""
+
+msgctxt "#30045"
+msgid "Meter"
+msgstr ""
+
+msgctxt "#30046"
+msgid "Millimeter"
+msgstr ""
+
+msgctxt "#30047"
+msgid "Feet"
+msgstr ""
+
+msgctxt "#30048"
+msgid "Inches"
+msgstr ""
+
+msgctxt "#30049"
+msgid "off"
+msgstr ""
+
+msgctxt "#30050"
+msgid "Pink noise"
+msgstr ""
+
+msgctxt "#30051"
+msgid "Voice"
+msgstr ""
+
+msgctxt "#30052"
+msgid "Front left over center"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Front right over center"
+msgstr ""
+
+msgctxt "#30054"
+msgid "Top front left"
+msgstr ""
+
+msgctxt "#30055"
+msgid "Top front right"
+msgstr ""
+
+msgctxt "#30056"
+msgid "Top front center"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Top center"
+msgstr ""
+
+msgctxt "#30058"
+msgid "Top Back left center"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Top Back right center"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Top Back center"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Back left over center"
+msgstr ""
+
+msgctxt "#30062"
+msgid "Back right over center"
+msgstr ""
+
+msgctxt "#30063"
+msgid "Top Back left"
+msgstr ""
+
+msgctxt "#30064"
+msgid "Top Back right"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Continues speaker test"
+msgstr ""
+
+msgctxt "#30066"
+msgid "Meter"
+msgstr ""
+
+msgctxt "#30067"
+msgid "Millimeter"
+msgstr ""
+
+msgctxt "#30068"
+msgid "Feet"
+msgstr ""
+
+msgctxt "#30069"
+msgid "Inches"
+msgstr ""
+
+msgctxt "#30070"
+msgid "Seconds"
+msgstr ""
+
+msgctxt "#30071"
+msgid "Milliseconds"
+msgstr ""
+
+msgctxt "#30072"
+msgid "Speaker distance"
+msgstr ""
+
+msgctxt "#30073"
+msgid "Speaker distance unit"
+msgstr ""
+
+msgctxt "#30074"
+msgid " distance - "
+msgstr ""
+
+msgctxt "#30075"
+msgid "Extended Demo-DSP Settings"
+msgstr ""
+
+msgctxt "#30076"
+msgid "Extended Demo-DSP Settings"
+msgstr ""
+
+# Addon mode names 30000 to 30001
+msgctxt "#30200"
+msgid "Stereo"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Dolby Pro Logic"
+msgstr ""
+
+# Addon settings names 30021 to 30050
+msgctxt "#30221"
+msgid "Stereo surround encoder / Double stereo generator"
+msgstr ""
+
+msgctxt "#30224"
+msgid "Dolby ProLogic decoder"
+msgstr ""
+
+msgctxt "#30226"
+msgid "FreeSurround DSP decoder"
+msgstr ""
+
+msgctxt "#30231"
+msgid "Speaker gain adjustment"
+msgstr ""
+
+msgctxt "#30232"
+msgid "Speaker distance adjustment"
+msgstr ""
+
+# Free Surround settings names 30051 to 30060
+
+msgctxt "#30251"
+msgid "Free Surround"
+msgstr ""
+
+msgctxt "#30252"
+msgid "Steering mode"
+msgstr ""
+
+msgctxt "#30253"
+msgid "Depth (backwards scaling)"
+msgstr ""
+
+msgctxt "#30254"
+msgid "Focus (ambience <-> localization)"
+msgstr ""
+
+msgctxt "#30255"
+msgid "Center width"
+msgstr ""
+
+msgctxt "#30256"
+msgid "Front separation"
+msgstr ""
+
+msgctxt "#30257"
+msgid "Rear separation"
+msgstr ""
+
+msgctxt "#30258"
+msgid "Panorama (circular wrap)"
+msgstr ""
+
+msgctxt "#30259"
+msgid "Phase Mode"
+msgstr ""
+
+msgctxt "#30260"
+msgid "Dimension (front/back shift)"
+msgstr ""

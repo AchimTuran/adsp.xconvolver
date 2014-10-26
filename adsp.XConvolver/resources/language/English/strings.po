@@ -1,0 +1,104 @@
+# XBMC Media Center language file
+# Addon Name: Tvheadend HTSP Client
+# Addon id: pvr.hts
+# Addon version: 1.6.11
+# Addon Provider: Lars Op den Kamp, Team XBMC
+msgid ""
+msgstr ""
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#settings labels
+
+msgctxt "#30000"
+msgid "Input Resample Mode 1"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Setup Input Resample Mode 1"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Here you can place your description for Input Resample Mode 1 (see help for more details)"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Here you can place your help for Input Resample Mode 1. All strings are placed in resources/language/<Language>/strings.po"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Preprocess Mode 1"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Setup Preprocess Mode 1"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Here you can place your description for Preprocess Mode 1 (see help for more details)"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Here you can place your help for Preprocess Mode 1. All strings are placed in resources/language/<Language>/strings.po"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Master Mode 1"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Setup Master Mode 1"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Here you can place your description for Master Mode 1 (see help for more details)"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Here you can place your help for Master Mode 1. All strings are placed in resources/language/<Language>/strings.po"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Postprocess Mode 1"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Setup Postprocess Mode 1"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Here you can place your description for Postprocess Mode 1 (see help for more details)"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Here you can place your help for Postprocess Mode 1. All strings are placed in resources/language/<Language>/strings.po"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Output Resample Mode 1"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Setup Output Resample Mode 1"
+msgstr ""
+
+msgctxt "#30018"
+"Here you can place your description for Output Resample Mode 1 (see help for more details)"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Here you can place your help for Output Resample Mode 1. All strings are placed in resources/language/<Language>/strings.po"
+msgstr ""
+
+msgctxt "#30251"
+msgid "Preprocess"
+msgstr ""

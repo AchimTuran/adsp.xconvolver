@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <setting id="master_stereo" type="bool" label="30221" default="true" />
+    <setting id="master_dolbyprologic" type="bool" label="30224" default="true" />
+    <setting id="master_freesurround" type="bool" label="30226" default="true" />
+    <setting id="speaker_gain" type="bool" label="30231" default="true" />
+    <setting id="speaker_distance" type="bool" label="30232" default="true" />
+</settings>

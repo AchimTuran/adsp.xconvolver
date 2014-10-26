@@ -1,0 +1,15 @@
+temp/
+Debug/
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.vcxproj
+*.filters
+*.lib
+*.pdb
+*.exp
+*.ilk
+VS2013Kodi_AddonProject/
+src/drc/
+adsp.XConvolver/IRs/
