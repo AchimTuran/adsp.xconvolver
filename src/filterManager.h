@@ -22,12 +22,13 @@
  */
 
 
+#include <stdio.h>
+
 class CFilterManager
 {
 	CFilterManager();
 	~CFilterManager();
 	
-	static
 };
 
 // singleton implementation based on 
