@@ -15,7 +15,7 @@ unsigned int IADSPProcessor::PreProcessNeededSamplesize(unsigned int Mode_id)
 
 unsigned int IADSPProcessor::InputResampleProcessNeededSamplesize()
 {
-	return 1024;
+	return 0;
 }
 
 int IADSPProcessor::InputResampleSampleRate()
@@ -30,7 +30,7 @@ AE_DSP_ERROR IADSPProcessor::MasterProcessSetMode(AE_DSP_STREAMTYPE Type, unsign
 
 unsigned int IADSPProcessor::MasterProcessNeededSamplesize()
 {
-	return 1024;
+	return 0;
 }
 
 int IADSPProcessor::MasterProcessGetOutChannels(unsigned long &Out_channel_present_flags)

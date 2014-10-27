@@ -113,7 +113,7 @@ public:
 	 */
 	virtual unsigned int PostProcess(unsigned int Mode_id, float **Array_in, float **Array_out, unsigned int Samples) = 0;
 #endif
-#ifdef ADSP_ADDON_USE_INPUTPROCESS
+#ifdef ADSP_ADDON_USE_OUTPUTRESAMPLE
 	//! If you define ADSP_ADDON_USE_INPUTPROCESS in templateConfiguration.h 
 	//! then your derived processing class must implement
 	//! CDSPProcessor::OutputResampleProcess(float **Array_in, float **Array_out, unsigned int Samples).

@@ -103,7 +103,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 		SAFE_DELETE(XBMC);
 		return ADDON_STATUS_PERMANENT_FAILURE;
 	}
-	XBMC->Log(LOG_DEBUG, "%s - Creating the Audio DSP add-on template", __FUNCTION__);
+	XBMC->Log(LOG_DEBUG, "%s - Creating the Audio DSP add-on XConvolver", __FUNCTION__);
 
 	m_CurStatus     = ADDON_STATUS_UNKNOWN;
 	g_strUserPath   = adspprops->strUserPath;

@@ -263,6 +263,8 @@ CADSPProcessorHandle *CADSPAddonHandler::GetStream(AE_DSP_STREAM_ID Id)
 
 AE_DSP_ERROR CADSPAddonHandler::StreamInitialize(const AE_DSP_SETTINGS *Settings)
 {
+  const unsigned int iStreamID = Settings->iStreamID;
+
 	return AE_DSP_ERROR_NO_ERROR;
 }
 
