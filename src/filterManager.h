@@ -23,48 +23,60 @@
 
 
 #include <stdio.h>
+#include "xbmc_adsp_types.h"
+#include "LibXConvolverCore/include/LXC_Core_types.h"
+#include "LibXConvolverCore/fftHandles/fftHandles_types.h"
 
-class CFilterManager
+typedef struct
 {
-	CFilterManager();
-	~CFilterManager();
-	
-};
+  float *filter;
+  uint maxFilterLength;
+  uint sampleFrequency;
+}FILTER_SAMPLES;
+
+typedef struct
+{
+  LXC_BUFFER                filters[AE_DSP_CH_MAX];
+  LXC_BUFFER_CALLBACKS      bufferCallbacks;
+  LXC_RINGBUFFER_CALLBACKS  ringbufferCallbacks;
+  LXC_CALLBACKS             lxcCallbacks;
+  LXC_FFT_HANDLE            fftHandle;
+  LXC_CONFIG                lxcConfig;
+} STREAM_FILTER;
+
 
 // singleton implementation based on 
 // http://de.wikibooks.org/wiki/C%2B%2B-Programmierung:_Entwurfsmuster:_Singleton#Normal_.28Heap.29
-class N
+class CFilterManager
 {
 public:
-	static N* Get()
-	{
-		static CGuard g;   // Speicherbereinigung
-		if (!_instance)
-			_instance = new N();
-		
-		return _instance;
-	}
-	void xyz();
+  static CFilterManager* Get();
+  bool LoadFilters();
+  STREAM_FILTER *CreateStreamFilter(uint SampleFrequency, uint MaxInputFrameLength, LXC_FFT_MODULE fftModule, LXC_OPTIMIZATION_MODULE Module = LXC_OPT_NATIVE);
+  static void DestroyStreamFilter(STREAM_FILTER **StreamFilter);
 
 private:
-	static N* _instance;
-	N(); /* verhindert, dass ein Objekt von außerhalb von N erzeugt wird. */
+	CFilterManager();                         // prevent object generation
+  CFilterManager(const CFilterManager&);    // prevent object generation with copy constructor
+	~CFilterManager();
+  
+  //  AE_DSP_STREAM_MAX_STREAMS
+  FILTER_SAMPLES m_Filters[AE_DSP_CH_MAX];  // array with original filter samples
+  static CFilterManager* m_Instance;        // filter manager instance
 
-	// protected, wenn man von der Klasse noch erben möchte
-	N(const N&); /* verhindert, dass eine weitere Instanz via Kopie-Konstruktor erstellt werden kann */
-	~N();
+  //LXC_FFT_HANDLE m_fftHandle;
 	
-	class CGuard
-	{
-		public:
-		~CGuard()
-		{
-			if(N::_instance)
-			{
-				delete N::_instance;
-				N::_instance = NULL;
-			}
-		}
-	};
-	friend class CGuard;
+  class CFilterManagerGuard
+  {
+  public:
+    ~CFilterManagerGuard()
+    {
+      if (CFilterManager::m_Instance)
+      {
+        delete CFilterManager::m_Instance;
+        CFilterManager::m_Instance = NULL;
+      }
+    }
+  };
+  friend class CFilterManagerGuard;
 };
