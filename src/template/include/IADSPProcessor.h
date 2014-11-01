@@ -32,6 +32,9 @@ public:
 	IADSPProcessor();
 	virtual ~IADSPProcessor();
 
+  //! This message should be used to initialize your ADSP_PROCESSOR_CLASS
+  virtual bool Init() = 0;
+
 #ifdef ADSP_ADDON_USE_INPUTPROCESS
 	//! If you define ADSP_ADDON_USE_INPUTPROCESS in templateConfiguration.h 
 	//! then your derived processing class must implement 

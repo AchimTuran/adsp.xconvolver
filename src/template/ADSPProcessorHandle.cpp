@@ -5,6 +5,11 @@ CADSPProcessorHandle::CADSPProcessorHandle(const AE_DSP_SETTINGS *Settings, cons
 {
 	memcpy(&m_StreamSettings, Settings, sizeof(AE_DSP_SETTINGS));
   memcpy(&m_StreamProperties, pProperties, sizeof(AE_DSP_STREAM_PROPERTIES));
+
+  if (!Init())
+  {
+    // ToDo: thow some error message
+  }
 }
 
 CADSPProcessorHandle::~CADSPProcessorHandle()

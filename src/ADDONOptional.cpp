@@ -27,6 +27,8 @@
  */
 #include "template/include/client.h"
 #include "CPUFeatures.h"
+#include <string>
+using namespace std;
 using namespace ADDON;
 
 #include "ADDONOptional.h"
@@ -35,6 +37,13 @@ using namespace ADDON;
 #include "Dialogs/GUIDialogMasterProcess.h"
 #include "Dialogs/GUIDialogPostProcess.h"
 #include "Dialogs/GUIDialogOutputResample.h"
+
+#include "filterManager.h"
+
+#include "LibXConvolverCore/include/LXC_Core.h"
+
+// Helper functions
+string GetAddonPath();
 
 CADDONOptional::CADDONOptional()
 {
@@ -53,6 +62,11 @@ ADDON_STATUS CADDONOptional::SetSetting(std::string SettingName, const void *Set
 unsigned int CADDONOptional::GetSettings(ADDON_StructSetting ***sSet)
 {
 	return 0;
+}
+
+void CADDONOptional::Destroy()
+{
+  LXC_Core_close();
 }
 
 void CADDONOptional::Stop()
@@ -133,7 +147,23 @@ AE_DSP_ERROR CADDONOptional::CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const
 
 bool CADDONOptional::OptionalInit()
 {
-  
+  // create filter manager
+  LXC_ERROR_CODE err = LXC_Core_init(GetAddonPath().c_str());
+  if (err != LXC_NO_ERR)
+  {
+    // ToDo: show some error message
+    return false;
+  }
+
+  CFilterManager *filterManager = CFilterManager::Get();
+  if (!filterManager)
+  {
+    XBMC->Log(LOG_ERROR, "Could not create filter manager! Not enough free memory?");
+    return false;
+  }
+
+  CFilterManager::Get()->LoadFilters();
+
   unsigned int cpuFeatures = XBMC->GetCPUFeatures();
 
   if (cpuFeatures & CPU_FEATURE_SSE3)
@@ -185,4 +215,20 @@ bool CADDONOptional::OptionalInit()
  // ADSP->AddMenuHook(&hook);
 
 	return true;
+}
+
+string GetAddonPath()
+{
+  string addonPath = g_strAddonPath;
+  if (!(addonPath.at(addonPath.size() - 1) == '\\' ||
+    addonPath.at(addonPath.size() - 1) == '/'))
+  {
+#ifdef TARGET_WINDOWS
+    addonPath += "\\";
+#else
+    addonPath += "/";
+#endif
+  }
+
+  return addonPath;
 }

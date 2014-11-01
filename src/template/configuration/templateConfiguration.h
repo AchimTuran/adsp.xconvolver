@@ -54,6 +54,8 @@
 //! If you define this, then your ADSP addon can get settings from xbmc.
 #define ADSP_ADDON_USE_GETSETTINGS
 //! ToDo!
+#define ADSP_ADDON_USE_DESTROY
+//! ToDo!
 #define ADSP_ADDON_USE_STOP
 //! ToDo!
 #define ADSP_ADDON_USE_FREESETTINGS

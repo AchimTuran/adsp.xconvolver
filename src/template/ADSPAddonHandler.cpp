@@ -194,10 +194,10 @@ bool CADSPAddonHandler::Init()
 }
 
 
-void CADSPAddonHandler::Destroy()
-{
-	// ToDo: what should we process here?!?
-}
+//void CADSPAddonHandler::Destroy()
+//{
+//	// ToDo: what should we process here?!?
+//}
 
 
 AE_DSP_ERROR CADSPAddonHandler::StreamCreate(const AE_DSP_SETTINGS *addonSettings, const AE_DSP_STREAM_PROPERTIES* pProperties)

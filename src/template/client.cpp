@@ -113,7 +113,10 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
 	if(!g_AddonHandler.Init())
 	{
-		return m_CurStatus;
+    SAFE_DELETE(ADSP);
+    SAFE_DELETE(GUI);
+    SAFE_DELETE(XBMC);
+    return ADDON_STATUS_PERMANENT_FAILURE;
 	}
 
 	m_CurStatus = ADDON_STATUS_OK;

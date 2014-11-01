@@ -53,7 +53,6 @@ public:
 	/*!
 	 * initialize or destroy methods for the AddonHandler
 	 */
-	void Destroy();
 	bool Init();
 
 	/*!
