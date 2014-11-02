@@ -44,6 +44,7 @@ using namespace ADDON;
 
 // Helper functions
 string GetAddonPath();
+extern LXC_OPTIMIZATION_MODULE g_LXC_optModule;
 
 CADDONOptional::CADDONOptional()
 {
@@ -168,10 +169,12 @@ bool CADDONOptional::OptionalInit()
 
   if (cpuFeatures & CPU_FEATURE_SSE3)
   {
+    g_LXC_optModule = LXC_OPT_SSE3;
     XBMC->Log(LOG_INFO, "XConvolver will use SSE3 optimization for convolution.");
   }
   else
   {
+    g_LXC_optModule = LXC_OPT_NATIVE;
     XBMC->Log(LOG_INFO, "XConvolver will use Native optimization for convolution.");
   }
 
