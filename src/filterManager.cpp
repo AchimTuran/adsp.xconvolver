@@ -29,7 +29,6 @@ using namespace ADDON;
 #include "filterManager.h"
 #include "LibXConvolverCore/include/LXC_Core.h"
 #include "LibXConvolverCore/fftHandles/fftHandles.h"
-#include "LibXConvolverUtils/helperFunctions.h"
 #include "LibXConvolverUtils/signal/wavLoader.h"
 #include "LibXConvolverUtils/signal/resampler.h"
 
@@ -165,7 +164,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
   // calculate next power of two
   // very important for fft length
   uint maxFreqFrameLength = 0;
-  LXC_checkPowerOfTwo(MaxInputFrameLength, &maxFreqFrameLength);
+  LXC_Core_checkPowerOfTwo(MaxInputFrameLength*2, &maxFreqFrameLength);
 
   // get LXC_fftModule
   LXC_ERROR_CODE err = LXC_get_fftHandle(&(streamFilter->fftHandle), fftModule, OptModule, maxFreqFrameLength, MaxInputFrameLength);
@@ -299,7 +298,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
       streamFilter->filters[ii].maxFilterLength = tempFilter.maxFilterLength;
       streamFilter->filters[ii].maxFilterPartLength = streamFilter->fftHandle.fftPlan.fftSize;
       streamFilter->filters[ii].maxFilterPartLength_NonZero = streamFilter->fftHandle.fftPlan.maxInputFrameLength;
-      streamFilter->filters[ii].maxFilterParts = LXC_calcMaxFilterParts(tempFilter.maxFilterLength, streamFilter->filters[ii].maxFilterPartLength_NonZero);
+      streamFilter->filters[ii].maxFilterParts = LXC_Core_calcMaxFilterParts(tempFilter.maxFilterLength, streamFilter->filters[ii].maxFilterPartLength_NonZero);
       streamFilter->filters[ii].sampleFrequency = tempFilter.sampleFrequency;
       if (streamFilter->filters[ii].maxFilterParts == 0)
       {
