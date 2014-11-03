@@ -27,6 +27,11 @@
  */
 #include <string>
 #include "template/include/IADSPProcessor.h"
+#include "filterManager.h"
+
+
+extern LXC_OPTIMIZATION_MODULE g_OptModule;
+extern LXC_FFT_MODULE g_fftModule;
 
 //!	In this class you can define your processing modes.
 /*! 
@@ -40,6 +45,9 @@ public:
 
 	//! Here for example you can delete global buffers from your Addon
   ~CXConvolverProcessor();
+
+  //! This method initialize the XConconvolverProcessor
+  virtual bool Init();
 
 	//!	Can be used to have unchanged stream.
 	/*!
@@ -64,7 +72,7 @@ public:
 	 * @remarks Optional. Is set by AE_DSP_ADDON_CAPABILITIES and asked with GetAddonCapabilities
 	 */
 	virtual unsigned int PostProcess(unsigned int Mode_id, float **Array_in, float **Array_out, unsigned int Samples);
-  virtual unsigned int PostProcessNeededSamplesize(unsigned int Mode_id);
+  //virtual unsigned int PostProcessNeededSamplesize(unsigned int Mode_id);
 
 	/*! 
 	 * @brief	Overloading the function and set output channels flags to the same value as input flags.
@@ -76,4 +84,15 @@ public:
 	 * @remarks Optional. Must be used and set if a channel up- or downmix is processed from the active master mode
 	 */
 	virtual int MasterProcessGetOutChannels(unsigned long &Out_channel_present_flags);
+
+private:
+  STREAM_FILTER   *m_StreamFilter;
+  LXC_RINGBUFFER  *m_Ringbuffers;
+  LXC_BUFFER      *m_ResultBuffers;
+  LXC_FFT_PLAN    *m_fftPlans;
+
+  int m_ProcessingChannels[AE_DSP_CH_MAX];
+  int m_BypassChannels[AE_DSP_CH_MAX];
+  uint m_MaxBypassChannels;
+  uint m_MaxProcessingChannels;
 };
