@@ -144,5 +144,5 @@ typedef enum
 
 typedef enum 
 {
-	ID_MENU_POST_PROCESS_XCONVOLVER = 1             /*!< @brief Postprocessing menu id for XConvolver. */
+	ID_MENU_XCONVOLVER_SETTINGS = 1               /*!< @brief Menu id for XConvolver settings. */
 }adspMENUIDs;
