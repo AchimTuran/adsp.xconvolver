@@ -17,8 +17,30 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#settings labels
+# ====== GUI Labels Start ======
+msgctxt "#21091"
+msgid "Settings"
+msgstr ""
 
+msgctxt "#21092"
+msgid "Filter Manager"
+msgstr ""
+
+msgctxt "#21093"
+msgid "Informations"
+msgstr ""
+
+msgctxt "#21094"
+msgid "Filter Scrappers"
+msgstr ""
+
+msgctxt "#21100"
+msgid "XConvolver - Settings"
+msgstr ""
+# ====== GUI Labels Start ======
+
+
+#settings labels
 msgctxt "#30000"
 msgid "FIR-XConvolver"
 msgstr ""
@@ -34,3 +56,49 @@ msgstr ""
 msgctxt "#30100"
 msgid "Some great help for XConvolver postprocessing mode."
 msgstr ""
+
+# ====== Addon Settings Labels Start ======
+msgctxt "#30500"
+msgid "Enable LXC_Native"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Enable LXC_SSE2"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Enable LXC_SSE3"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Enable LXC_SSE4"
+msgstr ""
+
+msgctxt "#30504"
+msgid "Enable LXC_AVX"
+msgstr ""
+
+msgctxt "#30505"
+msgid "Enable LXC_AVX2"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Enable LXC_CUDA"
+msgstr ""
+
+msgctxt "#30507"
+msgid "Enable LXC_OpenCL"
+msgstr ""
+
+msgctxt "#30508"
+msgid "Enable LXC_NEON"
+msgstr ""
+
+msgctxt "#30509"
+msgid "Enable LXC_ARM_VFP"
+msgstr ""
+
+msgctxt "#30510"
+msgid "Enable LXC_FMA"
+msgstr ""
+# ====== Addon Settings Labels End ======
