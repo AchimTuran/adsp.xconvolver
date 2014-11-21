@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <setting id="master_stereo" type="bool" label="30221" default="true" />
-    <setting id="master_dolbyprologic" type="bool" label="30224" default="true" />
-    <setting id="master_freesurround" type="bool" label="30226" default="true" />
-    <setting id="speaker_gain" type="bool" label="30231" default="true" />
-    <setting id="speaker_distance" type="bool" label="30232" default="true" />
+    <setting id="enable_LXC_Native" 	type="bool" label="30500" default="true" />
+	<!--<setting id="enable_LXC_SSE2" 		type="bool" label="30501" default="false" />-->
+	<setting id="enable_LXC_SSE3" 		type="bool" label="30502" default="true" />
+	<!--<setting id="enable_LXC_SSE4" 		type="bool" label="30503" default="false" />
+	<setting id="enable_LXC_AVX" 		type="bool" label="30504" default="false" />
+	<setting id="enable_LXC_AVX2" 		type="bool" label="30505" default="false" />
+	<setting id="enable_LXC_CUDA" 		type="bool" label="30506" default="false" />
+	<setting id="enable_LXC_OpenCL" 	type="bool" label="30507" default="false" />
+	<setting id="enable_LXC_NEON" 		type="bool" label="30508" default="false" />
+	<setting id="enable_LXC_ARM_VFP"	type="bool" label="30509" default="false" />
+	<setting id="enable_LXC_FMA" 		type="bool" label="30510" default="false" />-->
 </settings>
