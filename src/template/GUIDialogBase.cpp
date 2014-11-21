@@ -4,10 +4,7 @@ using namespace ADDON;
 
 CGUIDialogBase::CGUIDialogBase( std::string xmlFilename, bool ForceFallback, bool AsDialog, std::string DefaultSkin )
 {
-	m_window = GUI->Window_create(	xmlFilename.c_str(), 
-									DefaultSkin.c_str(),
-									ForceFallback, 
-									AsDialog );
+  m_window = GUI->Window_create(xmlFilename.c_str(), DefaultSkin.c_str(), ForceFallback, AsDialog);
 	if(m_window)
 	{
 		m_window->m_cbhdl     = this;
@@ -18,7 +15,7 @@ CGUIDialogBase::CGUIDialogBase( std::string xmlFilename, bool ForceFallback, boo
 	}
 	else
 	{
-		XBMC->Log( LOG_ERROR, "Couldn't create m_window! Not enough free memory?" );
+		XBMC->Log(LOG_ERROR, "Couldn't create window dialog %s !", xmlFilename.c_str());
 	}
 }
 
@@ -32,26 +29,46 @@ CGUIDialogBase::~CGUIDialogBase()
 
 bool CGUIDialogBase::OnInitCB(GUIHANDLE cbhdl)
 {
-  CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
-  return dialog->OnInit();
+  if (cbhdl)
+  {
+    CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
+    return dialog->OnInit();
+  }
+
+  return false;
 }
 
 bool CGUIDialogBase::OnClickCB(GUIHANDLE cbhdl, int controlId)
 {
-  CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
-  return dialog->OnClick(controlId);
+  if (cbhdl)
+  {
+    CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
+    return dialog->OnClick(controlId);
+  }
+
+  return false;
 }
 
 bool CGUIDialogBase::OnFocusCB(GUIHANDLE cbhdl, int controlId)
 {
-  CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
-  return dialog->OnFocus(controlId);
+  if (cbhdl)
+  {
+    CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
+    return dialog->OnFocus(controlId);
+  }
+
+return false;
 }
 
 bool CGUIDialogBase::OnActionCB(GUIHANDLE cbhdl, int actionId)
 {
-  CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
-  return dialog->OnAction(actionId);
+  if (cbhdl)
+  {
+    CGUIDialogBase *dialog = static_cast<CGUIDialogBase*>(cbhdl);
+    return dialog->OnAction(actionId);
+  }
+
+  return false;
 }
 
 bool CGUIDialogBase::Show()
@@ -60,10 +77,8 @@ bool CGUIDialogBase::Show()
 	{
 		return m_window->Show();
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 void CGUIDialogBase::Close()

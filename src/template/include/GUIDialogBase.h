@@ -25,24 +25,25 @@
 class CGUIDialogBase
 {
 public:
-	CGUIDialogBase( std::string xmlFilename, bool ForceFallback, bool AsDialog, std::string DefaultSkin = "Confluence" );
+	CGUIDialogBase( std::string xmlDialog, bool ForceFallback, bool AsDialog, std::string DefaultSkin = "Confluence" );
 	virtual ~CGUIDialogBase();
 
 	bool Show();
 	void Close();
 	void DoModal();
 
+protected: // protected virtual methods
+  virtual bool OnClick(int controlId) = 0;
+  virtual bool OnFocus(int controlId) = 0;
+  virtual bool OnInit() = 0;
+  virtual bool OnAction(int actionId) = 0;
+
+protected:
+  CAddonGUIWindow *m_window;     // window handle
+
 private:
 	static bool OnClickCB(GUIHANDLE cbhdl, int controlId);
 	static bool OnFocusCB(GUIHANDLE cbhdl, int controlId);
 	static bool OnInitCB(GUIHANDLE cbhdl);
 	static bool OnActionCB(GUIHANDLE cbhdl, int actionId);
-
-	CAddonGUIWindow          *m_window;	// window handle
-
-private:	// private virtual methods
-	virtual bool OnInit()				= 0;
-	virtual bool OnClick(int controlId) = 0;
-	virtual bool OnFocus(int controlId) = 0;
-	virtual bool OnAction(int actionId) = 0;
 };
