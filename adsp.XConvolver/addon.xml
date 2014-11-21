@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
-  id="adsp.XConvolver"
+  id="adsp.xconvolver"
   version="0.0.1"
   name="Audio DSP XConvolver"
   provider-name="Achim Turan">
@@ -10,11 +10,11 @@
   </requires>
   <extension
     point="xbmc.adspaddon"
-    library_linux="adsp.XConvolver.so"
-    library_osx="adsp.XConvolver.dylib"
-    library_wingl="adsp.XConvolver.dll"
-    library_windx="adsp.XConvolver.dll"
-    library_android="libadsp.XConvolver.so" />
+    library_linux="adsp.xconvolver.so"
+    library_osx="adsp.xconvolver.dylib"
+    library_wingl="adsp.xconvolver.dll"
+    library_windx="adsp.xconvolver.dll"
+    library_android="libadsp.xconvolver.so" />
   <extension point="xbmc.addon.metadata">
     <summary lang="en">XConvolver Audio DSP Addon</summary>
     <description lang="en">ToDo some great description.</description>
