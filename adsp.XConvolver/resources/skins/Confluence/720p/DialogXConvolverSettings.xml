@@ -73,7 +73,7 @@
 				<width>1200</width>
 				<height>30</height>
 				<font>font13_title</font>
-				<label>XConvolver Settings</label><!--$LOCALIZE[30100]-->
+				<label>$ADDON[adsp.xconvolver 31100]</label><!--XConvolver Settings: $LOCALIZE[31100]-->
 				<align>center</align>
 				<aligny>center</aligny>
 				<textcolor>selected</textcolor>
@@ -140,25 +140,25 @@
 			<content>
 				<description>settings selection list</description>
 				<item id="91">
-					<label>Settings</label><!--$LOCALIZE[21091]-->
+					<label>$ADDON[adsp.xconvolver 31091]</label><!--Settings: $LOCALIZE[31091]-->
 					<visible>true</visible>
 					<onclick>noop</onclick>
 					<property name="currentMode">Preprocessing</property>
 				</item>
 				<item id="92">
-					<label>Filter Manager</label><!--$LOCALIZE[21092]-->
+					<label>$ADDON[adsp.xconvolver 31092]</label><!--Filter Manager: $LOCALIZE[31092]-->
 					<visible>true</visible>
 					<onclick>noop</onclick>
 					<property name="currentMode">InputResampling</property>
 				</item>
 				<item id="93">
-					<label>Informations</label><!--$LOCALIZE[21093]-->
+					<label>$ADDON[adsp.xconvolver 31093]</label><!--Informations: $LOCALIZE[31093]-->
 					<visible>true</visible>
 					<onclick>noop</onclick>
 					<property name="currentMode">Masterprocessing</property>
 				</item>
 				<item id="94">
-					<label>Filter Scrappers</label><!--$LOCALIZE[21094]-->
+					<label>$ADDON[adsp.xconvolver 31094]</label><!--Filter Scrappers: $LOCALIZE[31094]-->
 					<visible>true</visible>
 					<onclick>noop</onclick>
 					<property name="currentMode">Postprocessing</property>

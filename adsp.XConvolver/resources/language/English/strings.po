@@ -17,29 +17,6 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# ====== GUI Labels Start ======
-msgctxt "#21091"
-msgid "Settings"
-msgstr ""
-
-msgctxt "#21092"
-msgid "Filter Manager"
-msgstr ""
-
-msgctxt "#21093"
-msgid "Informations"
-msgstr ""
-
-msgctxt "#21094"
-msgid "Filter Scrappers"
-msgstr ""
-
-msgctxt "#21100"
-msgid "XConvolver - Settings"
-msgstr ""
-# ====== GUI Labels Start ======
-
-
 #settings labels
 msgctxt "#30000"
 msgid "FIR-XConvolver"
@@ -102,3 +79,26 @@ msgctxt "#30510"
 msgid "Enable LXC_FMA"
 msgstr ""
 # ====== Addon Settings Labels End ======
+
+
+# ====== GUI Labels Start ======
+msgctxt "#31091"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#31092"
+msgid "Filter Manager"
+msgstr ""
+
+msgctxt "#31093"
+msgid "Informations"
+msgstr ""
+
+msgctxt "#31094"
+msgid "Filter Scrappers"
+msgstr ""
+
+msgctxt "#31100"
+msgid "XConvolver - Settings"
+msgstr ""
+# ====== GUI Labels Start ======
