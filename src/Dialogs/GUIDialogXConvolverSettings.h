@@ -35,6 +35,7 @@ private:
   virtual bool OnClick(int controlId);
   virtual bool OnFocus(int controlId);
   virtual bool OnAction(int actionId);
+  virtual void OnClose();
 
   int m_FocusedControl;
 };

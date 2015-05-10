@@ -78,3 +78,8 @@ bool CGUIDialogXConvolverSettings::OnAction(int actionId)
     return false;
   }
 }
+
+void CGUIDialogXConvolverSettings::OnClose()
+{
+
+}
