@@ -4,12 +4,7 @@
 CADSPProcessorHandle::CADSPProcessorHandle(const AE_DSP_SETTINGS *Settings, const AE_DSP_STREAM_PROPERTIES *pProperties)
 {
 	memcpy(&m_StreamSettings, Settings, sizeof(AE_DSP_SETTINGS));
-  memcpy(&m_StreamProperties, pProperties, sizeof(AE_DSP_STREAM_PROPERTIES));
-
-  if (!Init())
-  {
-    // ToDo: thow some error message
-  }
+	memcpy(&m_StreamProperties, pProperties, sizeof(AE_DSP_SETTINGS));
 }
 
 CADSPProcessorHandle::~CADSPProcessorHandle()
@@ -18,7 +13,6 @@ CADSPProcessorHandle::~CADSPProcessorHandle()
 
 AE_DSP_ERROR CADSPProcessorHandle::StreamInitialize(const AE_DSP_SETTINGS *Settings)
 {
-	AE_DSP_ERROR err = AE_DSP_ERROR_NO_ERROR;
 	memcpy(&m_StreamSettings, Settings, sizeof(AE_DSP_SETTINGS));
 
 	return AE_DSP_ERROR_NO_ERROR;

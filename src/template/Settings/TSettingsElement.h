@@ -19,22 +19,26 @@
  *
  */
 
-#include <kodi/kodi_adsp_types.h>
-#include "../configuration/templateConfiguration.h"
-#include "template/include/MACROHelper.h"
-#include ADSP_PROCESSOR_HEADER_FILE
 
-class CADSPProcessorHandle : public ADSP_PROCESSOR_CLASS_NAME
+
+#include <string>
+#include "ISettingsElement.h"
+
+template<typename T>
+class TSettingsElement : public ISettingsElement
 {
-public:
-	CADSPProcessorHandle(const AE_DSP_SETTINGS *settings, const AE_DSP_STREAM_PROPERTIES *pProperties);
-	~CADSPProcessorHandle();
+  public:
+    TSettingsElement(T &Value, std::string Key, SettingsTypes Type) :
+      ISettingsElement(Key, Type)
+    {
+      m_Value = Value;
+    }
 
-	AE_DSP_ERROR StreamInitialize(const AE_DSP_SETTINGS *settings);
+    virtual ~TSettingsElement() {}
 
-	float OutputResampleGetDelay();
-	float PostProcessGetDelay(unsigned int Mode_id);
-	float MasterProcessGetDelay();
-	float PreProcessGetDelay(unsigned int Mode_id);
-	float InputResampleGetDelay();
+    virtual T get_Setting()             { return m_Value; }
+    virtual void set_Setting(T &Value)  { m_Value = Value; }
+
+  protected:
+    T m_Value;
 };

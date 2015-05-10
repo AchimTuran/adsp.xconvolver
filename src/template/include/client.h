@@ -20,13 +20,13 @@
  *
  */
 
-#include "libXBMC_addon.h"
-#include "libXBMC_adsp.h"
-#include "libXBMC_gui.h"
+#include <kodi/libXBMC_addon.h>
+#include <kodi/libKODI_adsp.h>
+#include <kodi/libKODI_guilib.h>
 
 extern bool                          m_bCreated;
 extern std::string                   g_strUserPath;
 extern std::string                   g_strAddonPath;
-extern ADDON::CHelper_libXBMC_addon *XBMC;
-extern CHelper_libXBMC_gui          *GUI;
-extern CHelper_libXBMC_adsp         *ADSP;
+extern ADDON::CHelper_libXBMC_addon *KODI;
+extern CHelper_libKODI_guilib       *GUI;
+extern CHelper_libKODI_adsp         *ADSP;

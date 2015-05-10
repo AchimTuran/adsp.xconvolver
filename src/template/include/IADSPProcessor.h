@@ -19,7 +19,7 @@
  *
  */
 
-#include "xbmc_adsp_types.h"
+#include <kodi/kodi_adsp_types.h>
 #include "../configuration/templateConfiguration.h"
 
 //!	This is the interface class and you must derive your processing class from this interface.
@@ -31,9 +31,6 @@ class IADSPProcessor
 public:
 	IADSPProcessor();
 	virtual ~IADSPProcessor();
-
-  //! This message should be used to initialize your ADSP_PROCESSOR_CLASS
-  virtual bool Init() = 0;
 
 #ifdef ADSP_ADDON_USE_INPUTPROCESS
 	//! If you define ADSP_ADDON_USE_INPUTPROCESS in templateConfiguration.h 
@@ -116,7 +113,7 @@ public:
 	 */
 	virtual unsigned int PostProcess(unsigned int Mode_id, float **Array_in, float **Array_out, unsigned int Samples) = 0;
 #endif
-#ifdef ADSP_ADDON_USE_OUTPUTRESAMPLE
+#ifdef ADSP_ADDON_USE_INPUTPROCESS
 	//! If you define ADSP_ADDON_USE_INPUTPROCESS in templateConfiguration.h 
 	//! then your derived processing class must implement
 	//! CDSPProcessor::OutputResampleProcess(float **Array_in, float **Array_out, unsigned int Samples).
@@ -271,7 +268,36 @@ public:
 	 */
 	virtual AE_DSP_ERROR StreamIsModeSupported(AE_DSP_MODE_TYPE Type, unsigned int Mode_id, int Unique_db_mode_id);
 
+  //! ToDo: description.
+  /*!
+   * Returns ToDo!
+   * @return ToDo!
+   * @remarks ToDo!
+   */
+  virtual AE_DSP_ERROR Create() = 0;
+  
+  //!	This gets the current stream settings and properties. 
+  /*!
+   * Get stream settings and properties. For details see  and AE_DSP_STREAM_PROPERTIES structures.
+   * If the add-on operate with buffered arrays and the output size can be higher as 
+   * the input it becomes asked about needed size before any PostProcess call.
+   * @param pSettings Stream settings for details see AE_DSP_SETTINGS.
+   * @param pProperties Stream properties for details see AE_DSP_STREAM_PROPERTIES.
+   * @return AE_DSP_ERROR_INVALID_PARAMETERS: if your input parameters were invalid.
+   * AE_DSP_ERROR_NO_ERROR: if all was ok.
+   */
+  AE_DSP_ERROR GetStreamInfos(const AE_DSP_SETTINGS *pSettings, const AE_DSP_STREAM_PROPERTIES* pProperties, void *CustomStreamInfos=NULL);
+
+
 protected:
+  //! ToDo: description.
+  /*!
+   * Returns ToDo!
+   * @return ToDo!
+   * @remarks ToDo!
+   */
+  virtual AE_DSP_ERROR GetCustomStreamInfos(void *CustomStreamSettings);
+
 	//! Used stream settings for details see AE_DSP_SETTINGS.
 	AE_DSP_SETTINGS m_StreamSettings;
 	//! Used stream properties for details see AE_DSP_STREAM_PROPERTIES.

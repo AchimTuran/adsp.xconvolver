@@ -20,18 +20,22 @@
  */
 
 #include <string>
-#include "xbmc_adsp_types.h"
+#include <kodi/kodi_adsp_types.h>
+#include <kodi/threads/mutex.h>
 
 #include "../configuration/templateConfiguration.h"
 #include "ADSPProcessorHandle.h"
+#include "template/include/ADSPModeMessage.h"
 
 #include ADSP_PROCESSOR_HEADER_FILE
 
 #ifdef ADSP_ADDON_OPTIONAL_CLASS_NAME
-#include ADSP_ADDON_OPTIONAL_HEADER_FILE
+  #include ADSP_ADDON_OPTIONAL_HEADER_FILE
 #endif
 
 extern std::string g_strAddonPath;
+class CADSPAddonHandler;
+extern CADSPAddonHandler g_AddonHandler;
 
 class CADSPAddonHandler
 //#if USE_ADDONOPTIONAL
@@ -46,13 +50,14 @@ public:
 	/*!
 	 * Control function for start and stop of dsp processing.
 	 */
-	AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS *Settings, const AE_DSP_STREAM_PROPERTIES *pProperties);
+	AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS *Settings, const AE_DSP_STREAM_PROPERTIES *pProperties, const ADDON_HANDLE handle);
 	AE_DSP_ERROR StreamDestroy(unsigned int Id);
-	AE_DSP_ERROR StreamInitialize(const AE_DSP_SETTINGS *Settings);
+	AE_DSP_ERROR StreamInitialize(const ADDON_HANDLE handle, const AE_DSP_SETTINGS *Settings);
 
 	/*!
 	 * initialize or destroy methods for the AddonHandler
 	 */
+	void Destroy();
 	bool Init();
 
 	/*!
@@ -69,6 +74,26 @@ public:
 	 * Get Stream
 	*/
 	CADSPProcessorHandle *GetStream(AE_DSP_STREAM_ID Id);
+  //!	This gets the current stream Id settings and properties. 
+  /*!
+  * Get stream settings and properties. For details see  and AE_DSP_STREAM_PROPERTIES structures.
+  * If the add-on operate with buffered arrays and the output size can be higher as
+  * the input it becomes asked about needed size before any PostProcess call.
+  * @param Id The requested stream id. Never use a Id equal or greater than AE_DSP_STREAM_MAX_STREAMS.
+  * @param pSettings Stream settings for details see AE_DSP_SETTINGS.
+  * @param pProperties Stream properties for details see AE_DSP_STREAM_PROPERTIES.
+  * @return AE_DSP_ERROR_INVALID_PARAMETERS: if your input parameters were invalid.
+  * AE_DSP_ERROR_REJECTED: when the requested Stream Id is not active.
+  * AE_DSP_ERROR_NO_ERROR: if all was ok.
+  */
+  AE_DSP_ERROR GetStreamInfos(AE_DSP_STREAM_ID Id, const AE_DSP_SETTINGS *pSettings, const AE_DSP_STREAM_PROPERTIES* pProperties, void *CustomStreamInfos=NULL);
+
+  AE_DSP_ERROR SendMessageToStream(CADSPModeMessage &Message);
+
+  /*!
+   * Mutex for safe access to processing modes
+   */
+   PLATFORM::CMutex m_ADSPModeLock;
 
 private:
 	//AE_DSP_SETTINGS           m_Settings;           /*!< @brief (required) the active XBMC audio settings */

@@ -19,22 +19,31 @@
  *
  */
 
-#include <kodi/kodi_adsp_types.h>
-#include "../configuration/templateConfiguration.h"
-#include "template/include/MACROHelper.h"
-#include ADSP_PROCESSOR_HEADER_FILE
 
-class CADSPProcessorHandle : public ADSP_PROCESSOR_CLASS_NAME
+
+#include <string>
+
+template<typename T>
+class IAddonException
 {
-public:
-	CADSPProcessorHandle(const AE_DSP_SETTINGS *settings, const AE_DSP_STREAM_PROPERTIES *pProperties);
-	~CADSPProcessorHandle();
+  public:
+    IAddonException(std::string Function="", std::string Filename="", int Line=-1, std::string Module="")
+    {
+      m_Function    = Function;
+      m_Filename    = Filename;
+      m_Line        = Line;
+      m_Module      = Module;
+      m_Line        = Line;
+    }
 
-	AE_DSP_ERROR StreamInitialize(const AE_DSP_SETTINGS *settings);
+    virtual ~IAddonException() {}
 
-	float OutputResampleGetDelay();
-	float PostProcessGetDelay(unsigned int Mode_id);
-	float MasterProcessGetDelay();
-	float PreProcessGetDelay(unsigned int Mode_id);
-	float InputResampleGetDelay();
+    virtual T &what() = 0;
+
+  protected:
+    T m_Exception;
+    std::string m_Function;
+    std::string m_Filename;
+    std::string m_Module;
+    int         m_Line;
 };

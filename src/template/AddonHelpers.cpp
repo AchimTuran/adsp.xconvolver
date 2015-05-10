@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2014 Team XBMC
  *      http://xbmc.org
@@ -19,22 +18,7 @@
  *
  */
 
-#include <kodi/kodi_adsp_types.h>
-#include "../configuration/templateConfiguration.h"
-#include "template/include/MACROHelper.h"
-#include ADSP_PROCESSOR_HEADER_FILE
 
-class CADSPProcessorHandle : public ADSP_PROCESSOR_CLASS_NAME
-{
-public:
-	CADSPProcessorHandle(const AE_DSP_SETTINGS *settings, const AE_DSP_STREAM_PROPERTIES *pProperties);
-	~CADSPProcessorHandle();
 
-	AE_DSP_ERROR StreamInitialize(const AE_DSP_SETTINGS *settings);
-
-	float OutputResampleGetDelay();
-	float PostProcessGetDelay(unsigned int Mode_id);
-	float MasterProcessGetDelay();
-	float PreProcessGetDelay(unsigned int Mode_id);
-	float InputResampleGetDelay();
-};
+// reserved for future implementation
+//#include "AddonHelpers.h"
