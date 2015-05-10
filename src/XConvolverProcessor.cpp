@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2014 Team KODI
+ *      http://KODI.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with KODI; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -95,7 +95,7 @@ CXConvolverProcessor::~CXConvolverProcessor()
     {
       for (uint ii = 0; ii < m_MaxProcessingChannels; ii++)
       {
-        m_StreamFilter->fftHandle.fftCallbacks.destroy_fft(&m_fftPlans[ii]);
+        m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_destroy_fft(&m_fftPlans[ii]);
       }
 
       delete[] m_fftPlans;
@@ -116,7 +116,7 @@ bool CXConvolverProcessor::Init()
   m_StreamFilter = CFilterManager::Get()->CreateStreamFilter(m_StreamSettings.iProcessSamplerate, m_StreamSettings.iProcessFrames, g_fftModule, g_LXC_optModule);
   if (!m_StreamFilter)
   {
-    XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create stream filter! Not enough free memory?");
+    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create stream filter! Not enough free memory?");
     return false;
   }
 
@@ -153,22 +153,22 @@ bool CXConvolverProcessor::Init()
   if (!m_fftPlans)
   {
     // ToDo: throw some error message
-    XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create fft plans! Not enough free memory?");
+    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create fft plans! Not enough free memory?");
     return false;
   }
 
   // create fft plans
   for (uint ii = 0; ii < m_MaxProcessingChannels; ii++)
   {
-    m_fftPlans[ii].fftSize = 0;
-    m_fftPlans[ii].fftZeros = 0;
-    m_fftPlans[ii].maxInputFrameLength = 0;
-    m_fftPlans[ii].scaleFactor = 0;
-    m_fftPlans[ii].specific_fftPlan = NULL;
+    m_fftPlans[ii].LXC_fftSize = 0;
+    m_fftPlans[ii].LXC_fftZeros = 0;
+    m_fftPlans[ii].LXC_maxInputFrameLength = 0;
+    m_fftPlans[ii].LXC_scaleFactor = 0;
+    m_fftPlans[ii].LXC_specific_fftPlan = NULL;
 
-    LXC_ERROR_CODE err = m_StreamFilter->fftHandle.fftCallbacks.create_fft( &(m_fftPlans[ii]), 
-                                                                            m_StreamFilter->fftHandle.fftPlan.fftSize, 
-                                                                            m_StreamFilter->fftHandle.fftPlan.maxInputFrameLength);
+    LXC_ERROR_CODE err = m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_create_fft(&(m_fftPlans[ii]),
+                                                                                   m_StreamFilter->fftHandle.LXC_fftPlan.LXC_fftSize,
+                                                                                   m_StreamFilter->fftHandle.LXC_fftPlan.LXC_maxInputFrameLength);
     if (err != LXC_NO_ERR)
     {
       // ToDo: show some error message
@@ -176,7 +176,7 @@ bool CXConvolverProcessor::Init()
     }
   }
   // destroy unused fftPlan
-  m_StreamFilter->fftHandle.fftCallbacks.destroy_fft(&(m_StreamFilter->fftHandle.fftPlan));
+  m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_destroy_fft(&(m_StreamFilter->fftHandle.LXC_fftPlan));
 
   // ToDo: pack input channels to use one fft/ifft
 
@@ -185,7 +185,7 @@ bool CXConvolverProcessor::Init()
   if (!m_Ringbuffers)
   {
     // ToDo: throw some error message
-    XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffers! Not enough free memory?");
+    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffers! Not enough free memory?");
     return false;
   }
 
@@ -194,7 +194,7 @@ bool CXConvolverProcessor::Init()
   if (!m_ResultBuffers)
   {
     // ToDo: throw some error message
-    XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create result buffers! Not enough free memory?");
+    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create result buffers! Not enough free memory?");
     return false;
   }
 
@@ -211,7 +211,7 @@ bool CXConvolverProcessor::Init()
     if (err != LXC_NO_ERR)
     {
       // ToDo: throw some error message
-      XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
+      KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
       return false;
     }
 
@@ -227,7 +227,7 @@ bool CXConvolverProcessor::Init()
     if (err != LXC_NO_ERR)
     {
       // ToDo: throw some error message
-      XBMC->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
+      KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
       return false;
     }
   }
@@ -320,13 +320,13 @@ unsigned int CXConvolverProcessor::PostProcess(unsigned int Mode_id, float **Arr
     //memcpy(Array_out[m_ProcessingChannels[ii]], Array_in[m_ProcessingChannels[ii]], Samples*sizeof(float));
     LXC_FFT_PLAN *fftPlan = &(m_fftPlans[ii]);
     //const uint timeFrameLength = fftPlan->maxInputFrameLength;
-    const uint freqFrameLength = fftPlan->fftSize;
+    const uint freqFrameLength = fftPlan->LXC_fftSize;
 
     // convert format external, fft, convert format internal
-    m_StreamFilter->fftHandle.fftCallbacks.fmtc_external_TO_fft(&(Array_in[m_ProcessingChannels[ii]][0]), fftPlan, Samples);
-    m_StreamFilter->fftHandle.fftCallbacks.fft(fftPlan);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_external_TO_fft(&(Array_in[m_ProcessingChannels[ii]][0]), fftPlan, Samples);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_fft(fftPlan);
     void *X = m_StreamFilter->ringbufferCallbacks.LXC_Ringbuffer_getNextPart(&(m_Ringbuffers[ii]));
-    m_StreamFilter->fftHandle.fftCallbacks.fmtc_fft_TO_internal(fftPlan, X, freqFrameLength);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_fft_TO_internal(fftPlan, X, freqFrameLength);
 
     // convolution in frequency domain is only a complex multiplication
     // convolve channel1
@@ -343,7 +343,7 @@ unsigned int CXConvolverProcessor::PostProcess(unsigned int Mode_id, float **Arr
     }
 
     // sum all samples
-    m_StreamFilter->lxcCallbacks.LXC_CpxAdd(&(m_ResultBuffers[ii]), m_fftPlans[ii].scaleFactor);
+    m_StreamFilter->lxcCallbacks.LXC_CpxAdd(&(m_ResultBuffers[ii]), m_fftPlans[ii].LXC_scaleFactor);
 
     void* Z = m_StreamFilter->bufferCallbacks.LXC_Buffer_getPart(&(m_ResultBuffers[ii]), 0);
     if (!Z)
@@ -352,9 +352,9 @@ unsigned int CXConvolverProcessor::PostProcess(unsigned int Mode_id, float **Arr
     }
 
     // do inverse fast fourier transform
-    m_StreamFilter->fftHandle.fftCallbacks.fmtc_internal_TO_fft(Z, fftPlan, freqFrameLength);
-    m_StreamFilter->fftHandle.fftCallbacks.ifft(fftPlan);
-    m_StreamFilter->fftHandle.fftCallbacks.fmtc_fft_TO_external(fftPlan, &(Array_out[m_ProcessingChannels[ii]][0]), Samples);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_internal_TO_fft(Z, fftPlan, freqFrameLength);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_ifft(fftPlan);
+    m_StreamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_fft_TO_external(fftPlan, &(Array_out[m_ProcessingChannels[ii]][0]), Samples);
   }
 
 	return Samples;
@@ -369,4 +369,14 @@ int CXConvolverProcessor::MasterProcessGetOutChannels(unsigned long &Out_channel
 {
 	Out_channel_present_flags = m_StreamSettings.lInChannelPresentFlags;
 	return m_StreamSettings.iInChannels;
+}
+
+AE_DSP_ERROR CXConvolverProcessor::Create()
+{
+  return AE_DSP_ERROR_NO_ERROR;
+}
+
+AE_DSP_ERROR CXConvolverProcessor::send_Message(CADSPModeMessage &Message)
+{
+  return AE_DSP_ERROR_NO_ERROR;
 }

@@ -22,9 +22,9 @@
 
 
 #include <stdio.h>
-#include "xbmc_adsp_types.h"
-#include "LibXConvolverCore/include/LXC_Core_types.h"
-#include "LibXConvolverCore/fftHandles/fftHandles_types.h"
+#include <kodi/kodi_adsp_types.h>
+#include <LibXConvolverCore/include/LXC_Core_types.h>
+#include <LibXConvolverCore/LXC_fftHandles/LXC_fftHandles_types.h>
 
 typedef struct
 {

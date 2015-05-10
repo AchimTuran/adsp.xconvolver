@@ -1,6 +1,6 @@
 /*
-*      Copyright (C) 2005-2014 Team XBMC
-*      http://xbmc.org
+*      Copyright (C) 2005-2014 Team KODI
+*      http://KODI.org
 *
 *  This Program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 *  GNU General Public License for more details.
 *
 *  You should have received a copy of the GNU General Public License
-*  along with XBMC; see the file COPYING.  If not, see
+*  along with KODI; see the file COPYING.  If not, see
 *  <http://www.gnu.org/licenses/>.
 *
 */
@@ -26,10 +26,10 @@ using namespace std;
 using namespace ADDON;
 
 #include "filterManager.h"
-#include "LibXConvolverCore/include/LXC_Core.h"
-#include "LibXConvolverCore/fftHandles/fftHandles.h"
-#include "LibXConvolverUtils/signal/wavLoader.h"
-#include "LibXConvolverUtils/signal/resampler.h"
+#include <LibXConvolverCore/include/LXC_Core.h>
+#include <LibXConvolverCore/LXC_fftHandles/LXC_fftHandles.h>
+#include <LibXConvolverUtils/LXC_Signal/LXC_WavLoader.h>
+#include <LibXConvolverUtils/LXC_Signal/LXC_Resampler.h>
 
 // Helper functions
 string DSPChannelToString(AE_DSP_CHANNEL Channel);
@@ -78,7 +78,7 @@ CFilterManager *CFilterManager::Get()
 
 bool CFilterManager::LoadFilters()
 {
-  unsigned long channelFlags = ADSP->GetCurrentPresentSinkChannelFlags();
+  unsigned long channelFlags = 0;//ADSP->GetCurrentPresentSinkChannelFlags();
 
   for (uint ii = 0; ii < AE_DSP_CH_MAX; ii++)
   {
@@ -90,9 +90,9 @@ bool CFilterManager::LoadFilters()
       m_Filters[ii].sampleFrequency = 0;
 
       // ToDo: Load filters from wave files
-      WavStruct filterFile;
+      LXC_WavStruct filterFile;
       filterFile.samples = NULL;
-      unsigned int loadedSamples = CWavLoader::openWavFile(channelToFilterFile(channelName), &filterFile);
+      unsigned int loadedSamples = LXC_CWavLoader::openWavFile(channelToFilterFile(channelName), &filterFile);
       if (loadedSamples > 0)
       {
         float *tempArray = NULL;
@@ -101,7 +101,7 @@ bool CFilterManager::LoadFilters()
 
         if (filterFile.maxChannels > 1)
         {
-          CWavLoader::reorderChannels(&filterFile);
+          LXC_CWavLoader::reorderChannels(&filterFile);
           // ToDo: show some warning, because only one channel is used
           
           // only the first channel will be used
@@ -170,7 +170,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
   if (err != LXC_NO_ERR)
   {
     // ToDo LXC error Code to String
-    XBMC->Log(LOG_ERROR, "Could not create stream filter. ToDo LXC Error fftModule!");
+    KODI->Log(LOG_ERROR, "Could not create stream filter. ToDo LXC Error fftModule!");
     DestroyStreamFilter(&streamFilter);
     return NULL;
   }
@@ -183,21 +183,21 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
   if (err != LXC_NO_ERR)
   {
     // ToDo LXC error Code to String
-    XBMC->Log(LOG_ERROR, "Could not get LXC_Callbacks.");
+    KODI->Log(LOG_ERROR, "Could not get LXC_Callbacks.");
     DestroyStreamFilter(&streamFilter);
     return NULL;
   }
 
   // check filters for resampling
-  CResampler *resampler = NULL;
+  LXC_CResampler *resampler = NULL;
   for (uint ii = 0; ii < AE_DSP_CH_MAX && !resampler; ii++)
   {
     if (m_Filters[ii].filter && m_Filters[ii].sampleFrequency != SampleFrequency)
     {
-      resampler = new CResampler(1024, m_Filters[ii].sampleFrequency, SampleFrequency);
+      resampler = new LXC_CResampler(1024, m_Filters[ii].sampleFrequency, SampleFrequency);
       if (!resampler)
       {
-        XBMC->Log(LOG_ERROR, "Could not create stream filter resampler.");
+        KODI->Log(LOG_ERROR, "Could not create stream filter resampler.");
         CFilterManager::DestroyStreamFilter(&streamFilter);
 
         // ToDo throw some error
@@ -219,7 +219,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
       { // perform filter samples resampling
         requireResampling = true;
         
-        tempFilter.maxFilterLength = CResampler::CalcMaxOutputSamples(m_Filters[ii].maxFilterLength, m_Filters[ii].sampleFrequency, SampleFrequency);
+        tempFilter.maxFilterLength = LXC_CResampler::CalcMaxOutputSamples(m_Filters[ii].maxFilterLength, m_Filters[ii].sampleFrequency, SampleFrequency);
         tempFilter.sampleFrequency = SampleFrequency;
         
         // create temp buffer
@@ -244,7 +244,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         {
           if (err == LXC_ERR_RESAMPLER)
           {
-            XBMC->Log(LOG_ERROR, __FUNCTION__": Resampler error: %s", resampler->GetLastError());
+            KODI->Log(LOG_ERROR, __FUNCTION__": Resampler error: %s", resampler->GetLastError());
           }
 
           CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -295,8 +295,8 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
       // set filter parameters
       streamFilter->filters[ii].buffer = NULL;
       streamFilter->filters[ii].maxFilterLength = tempFilter.maxFilterLength;
-      streamFilter->filters[ii].maxFilterPartLength = streamFilter->fftHandle.fftPlan.fftSize;
-      streamFilter->filters[ii].maxFilterPartLength_NonZero = streamFilter->fftHandle.fftPlan.maxInputFrameLength;
+      streamFilter->filters[ii].maxFilterPartLength = streamFilter->fftHandle.LXC_fftPlan.LXC_fftSize;
+      streamFilter->filters[ii].maxFilterPartLength_NonZero = streamFilter->fftHandle.LXC_fftPlan.LXC_maxInputFrameLength;
       streamFilter->filters[ii].maxFilterParts = LXC_Core_calcMaxFilterParts(tempFilter.maxFilterLength, streamFilter->filters[ii].maxFilterPartLength_NonZero);
       streamFilter->filters[ii].sampleFrequency = tempFilter.sampleFrequency;
       if (streamFilter->filters[ii].maxFilterParts == 0)
@@ -340,7 +340,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
       }
 
       // Transform samples into frequency domain
-      float *TempSamples = new float[streamFilter->fftHandle.fftPlan.fftSize];
+      float *TempSamples = new float[streamFilter->fftHandle.LXC_fftPlan.LXC_fftSize];
       if (!TempSamples)
       {
         CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -359,9 +359,9 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         // ToDo: throw some error message
         return NULL;
       }
-      const uint arrayStep  = streamFilter->fftHandle.fftPlan.maxInputFrameLength;
+      const uint arrayStep  = streamFilter->fftHandle.LXC_fftPlan.LXC_maxInputFrameLength;
       const uint maxParts   = streamFilter->filters[ii].maxFilterParts;
-      const uint maxPartSize = streamFilter->fftHandle.fftPlan.fftSize;
+      const uint maxPartSize = streamFilter->fftHandle.LXC_fftPlan.LXC_fftSize;
       for (uint part = 0; part < maxParts -1; part++)
       {
         // copy samples to internal structure
@@ -373,7 +373,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         for (uint jj = arrayStep; jj < maxPartSize; jj++)
           TempSamples[jj] = 0.0f;
 
-        err = streamFilter->fftHandle.fftCallbacks.fmtc_external_TO_fft(TempSamples, &(streamFilter->fftHandle.fftPlan), maxPartSize);
+        err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_external_TO_fft(TempSamples, &(streamFilter->fftHandle.LXC_fftPlan), maxPartSize);
         if (err != LXC_NO_ERR)
         {
           CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -396,7 +396,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
           return NULL;
         }
 
-        err = streamFilter->fftHandle.fftCallbacks.fft(&(streamFilter->fftHandle.fftPlan));
+        err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fft(&(streamFilter->fftHandle.LXC_fftPlan));
         if (err != LXC_NO_ERR)
         {
           CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -419,7 +419,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
           return NULL;
         }
 
-        err = streamFilter->fftHandle.fftCallbacks.fmtc_fft_TO_internal(&(streamFilter->fftHandle.fftPlan),
+        err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_fft_TO_internal(&(streamFilter->fftHandle.LXC_fftPlan),
                                                                         streamFilter->bufferCallbacks.LXC_Buffer_getPart(&(streamFilter->filters[ii]), part), 
                                                                         maxPartSize);
         if (err != LXC_NO_ERR)
@@ -455,7 +455,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
       for (uint jj = lastSamples; jj < maxPartSize; jj++)
         TempSamples[jj] = 0.0f;
 
-      err = streamFilter->fftHandle.fftCallbacks.fmtc_external_TO_fft(TempSamples, &(streamFilter->fftHandle.fftPlan), maxPartSize);
+      err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_external_TO_fft(TempSamples, &(streamFilter->fftHandle.LXC_fftPlan), maxPartSize);
       if (err != LXC_NO_ERR)
       {
         CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -478,7 +478,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         return NULL;
       }
 
-      err = streamFilter->fftHandle.fftCallbacks.fft(&(streamFilter->fftHandle.fftPlan));
+      err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fft(&(streamFilter->fftHandle.LXC_fftPlan));
       if (err != LXC_NO_ERR)
       {
         CFilterManager::DestroyStreamFilter(&streamFilter);
@@ -501,7 +501,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         return NULL;
       }
 
-      err = streamFilter->fftHandle.fftCallbacks.fmtc_fft_TO_internal(&(streamFilter->fftHandle.fftPlan),
+      err = streamFilter->fftHandle.LXC_fftCallbacks.LXC_fmtc_fft_TO_internal(&(streamFilter->fftHandle.LXC_fftPlan),
         streamFilter->bufferCallbacks.LXC_Buffer_getPart(&(streamFilter->filters[ii]), maxParts -1),
         maxPartSize);
       if (err != LXC_NO_ERR)
@@ -574,9 +574,9 @@ void CFilterManager::DestroyStreamFilter(STREAM_FILTER **StreamFilter)
     }
 
     // destroy fft module
-    if ((*StreamFilter)->fftHandle.fftCallbacks.destroy_fft)
+    if ((*StreamFilter)->fftHandle.LXC_fftCallbacks.LXC_destroy_fft)
     {
-      (*StreamFilter)->fftHandle.fftCallbacks.destroy_fft(&((*StreamFilter)->fftHandle.fftPlan));
+      (*StreamFilter)->fftHandle.LXC_fftCallbacks.LXC_destroy_fft(&((*StreamFilter)->fftHandle.LXC_fftPlan));
     }
 
     delete *StreamFilter;

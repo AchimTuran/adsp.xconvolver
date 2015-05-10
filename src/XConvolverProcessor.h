@@ -28,6 +28,7 @@
 #include <string>
 #include "template/include/IADSPProcessor.h"
 #include "filterManager.h"
+#include "template/include/ADSPModeMessage.h"
 
 
 extern LXC_OPTIMIZATION_MODULE g_OptModule;
@@ -84,6 +85,9 @@ public:
 	 * @remarks Optional. Must be used and set if a channel up- or downmix is processed from the active master mode
 	 */
 	virtual int MasterProcessGetOutChannels(unsigned long &Out_channel_present_flags);
+
+  virtual AE_DSP_ERROR Create();
+  virtual AE_DSP_ERROR send_Message(CADSPModeMessage &Message);
 
 private:
   STREAM_FILTER   *m_StreamFilter;

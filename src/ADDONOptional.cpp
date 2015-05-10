@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2014 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2014 Team KODI
+ *      http://KODI.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
+ *  along with KODI; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  *  http://www.gnu.org/copyleft/gpl.html
  *
@@ -26,7 +26,7 @@
  * ToDo: detailed description!
  */
 #include "template/include/client.h"
-#include "CPUFeatures.h"
+#include <asplib/utils/computeDeviceInfo/cpuInfo.h>
 #include <string>
 using namespace std;
 using namespace ADDON;
@@ -116,7 +116,7 @@ AE_DSP_ERROR CADDONOptional::CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const
     break;
 
 	  default:
-		  XBMC->Log(LOG_ERROR, "called unknown menu hook!" );
+		  KODI->Log(LOG_ERROR, "called unknown menu hook!" );
 		  return AE_DSP_ERROR_FAILED;
 	  break;
 	};
@@ -137,38 +137,38 @@ bool CADDONOptional::OptionalInit()
   CFilterManager *filterManager = CFilterManager::Get();
   if (!filterManager)
   {
-    XBMC->Log(LOG_ERROR, "Could not create filter manager! Not enough free memory?");
+    KODI->Log(LOG_ERROR, "Could not create filter manager! Not enough free memory?");
     return false;
   }
 
   CFilterManager::Get()->LoadFilters();
 
-  unsigned int cpuFeatures = XBMC->GetCPUFeatures();
-
-  if (cpuFeatures & CPU_FEATURE_SSE3)
+  unsigned int cpuFeatures = 0;
+  CPUINFO_getCPUFeatureFlags(&cpuFeatures);
+  if (cpuFeatures & CPUINFO_FEATURE_FLAG_SSE3)
   {
     g_LXC_optModule = LXC_OPT_SSE3;
-    XBMC->Log(LOG_INFO, "XConvolver will use SSE3 optimization for convolution.");
+    KODI->Log(LOG_INFO, "XConvolver will use SSE3 optimization for convolution.");
   }
   else
   {
     g_LXC_optModule = LXC_OPT_NATIVE;
-    XBMC->Log(LOG_INFO, "XConvolver will use Native optimization for convolution.");
+    KODI->Log(LOG_INFO, "XConvolver will use Native optimization for convolution.");
   }
 
   // check if filter scrapper addon is available
-  if (XBMC->HasAddon("script.filter-scrapper"))
-  {
-    int id = XBMC->ExecutePythonScript("script.filter-scrapper");
-    while (id)
-    {
-      Sleep(100);
-      if (!XBMC->IsPythonScriptRunning(id))
-      {
-        break;
-      }
-    }
-  }
+  //if (KODI->HasAddon("script.filter-scrapper"))
+  //{
+  //  int id = KODI->ExecutePythonScript("script.filter-scrapper");
+  //  while (id)
+  //  {
+  //    Sleep(100);
+  //    if (!KODI->IsPythonScriptRunning(id))
+  //    {
+  //      break;
+  //    }
+  //  }
+  //}
 
   // now we register menu hooks
 	AE_DSP_MENUHOOK hook;
