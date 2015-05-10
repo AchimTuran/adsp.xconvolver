@@ -89,9 +89,31 @@ AE_DSP_ERROR CADDONOptional::CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const
 	{
     case ID_MENU_XCONVOLVER_SETTINGS:
 		  {
-        CGUIDialogXConvolverSettings dialog;
+        CGUIDialogXConvolverSettings dialog(4);
         dialog.DoModal();
 		  }
+    break;
+
+    case ID_MENU_XCONVOLVER_INFORMATION:
+    {
+      CGUIDialogXConvolverSettings dialog(6);
+      dialog.DoModal();
+    }
+    break;
+
+    case ID_MENU_XCONVOLVER_FILTER_MANAGER:
+    {
+      CGUIDialogXConvolverSettings dialog(0);
+      dialog.DoModal();
+    }
+    break;
+
+    case ID_MENU_XCONVOLVER_CHANNEL_MIXER:
+    {
+      CGUIDialogXConvolverSettings dialog(3);
+      dialog.DoModal();
+    }
+    break;
 
 	  default:
 		  XBMC->Log(LOG_ERROR, "called unknown menu hook!" );
@@ -151,14 +173,53 @@ bool CADDONOptional::OptionalInit()
   // now we register menu hooks
 	AE_DSP_MENUHOOK hook;
 
-  // register menu hook for the post process settings
+  // register menu hook for XConvolver information
+  hook.iHookId            = ID_MENU_XCONVOLVER_INFORMATION;
+  hook.category           = AE_DSP_MENUHOOK_INFORMATION;
+  hook.iLocalizedStringId = 30000;
+  hook.iRelevantModeId    = POST_PROCESS_CONVOLVER_MODE_ID;
+  hook.bNeedPlayback      = false;
+  ADSP->AddMenuHook(&hook);
+
+  // register menu hook for XConvolver settings
   hook.iHookId            = ID_MENU_XCONVOLVER_SETTINGS;
+  hook.category           = AE_DSP_MENUHOOK_SETTING;
+  hook.iLocalizedStringId = 30000;
+  hook.iRelevantModeId    = POST_PROCESS_CONVOLVER_MODE_ID;
+  hook.bNeedPlayback      = false;
+  ADSP->AddMenuHook(&hook);
+
+  // register menu hook for XConvolver information
+  hook.iHookId            = ID_MENU_XCONVOLVER_INFORMATION;
+  hook.category           = AE_DSP_MENUHOOK_INFORMATION;
+  hook.iLocalizedStringId = 30000;
+  hook.iRelevantModeId    = POST_PROCESS_CHANNEL_MIXER_MODE_ID;
+  hook.bNeedPlayback      = false;
+  ADSP->AddMenuHook(&hook);
+
+  // register menu hook for XConvolver settings
+  hook.iHookId            = ID_MENU_XCONVOLVER_SETTINGS;
+  hook.category           = AE_DSP_MENUHOOK_SETTING;
+  hook.iLocalizedStringId = 30000;
+  hook.iRelevantModeId    = POST_PROCESS_CHANNEL_MIXER_MODE_ID;
+  hook.bNeedPlayback      = false;
+  ADSP->AddMenuHook(&hook);
+
+  // register menu hook for Convolver settings
+  hook.iHookId            = ID_MENU_XCONVOLVER_FILTER_MANAGER;
   hook.category           = AE_DSP_MENUHOOK_POST_PROCESS;
   hook.iLocalizedStringId = 30000;
   hook.iRelevantModeId    = POST_PROCESS_CONVOLVER_MODE_ID;
   hook.bNeedPlayback      = false;
   ADSP->AddMenuHook(&hook);
 
+  // register menu hook for XConvolver settings
+  hook.iHookId            = ID_MENU_XCONVOLVER_CHANNEL_MIXER;
+  hook.category           = AE_DSP_MENUHOOK_POST_PROCESS;
+  hook.iLocalizedStringId = 30000;
+  hook.iRelevantModeId    = POST_PROCESS_CHANNEL_MIXER_MODE_ID;
+  hook.bNeedPlayback      = false;
+  ADSP->AddMenuHook(&hook);
 	return true;
 }
 

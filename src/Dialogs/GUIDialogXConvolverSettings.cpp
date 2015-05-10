@@ -23,10 +23,15 @@
 
 #include "GUIDialogXConvolverSettings.h"
 
+#define CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY  9003
 
-CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings() :
+CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
   CGUIDialogBase("DialogXConvolverSettings.xml", false, true)
 {
+  if (FocusedControl >= 0)
+  {
+    m_FocusedControl = FocusedControl;
+  }
 }
 
 CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
@@ -35,11 +40,22 @@ CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
 
 bool CGUIDialogXConvolverSettings::OnInit()
 {
+  if (m_FocusedControl >= 0)
+  { // ToDo: Set Focus control
+    m_window->SetFocusId(900);
+    m_window->SetCurrentListPosition(m_FocusedControl);
+  }
+
   return true;
 }
 
 bool CGUIDialogXConvolverSettings::OnClick(int controlId)
 {
+  //if (controlId == CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY)
+  //{
+  //  GUI->control_get
+  //}
+
   return true;
 }
 

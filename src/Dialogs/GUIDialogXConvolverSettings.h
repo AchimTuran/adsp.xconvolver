@@ -27,7 +27,7 @@
 class CGUIDialogXConvolverSettings : public CGUIDialogBase
 {
 public:
-  CGUIDialogXConvolverSettings();
+  CGUIDialogXConvolverSettings(int FocusedControl=-1);
   ~CGUIDialogXConvolverSettings();
 
 private:
@@ -35,4 +35,6 @@ private:
   virtual bool OnClick(int controlId);
   virtual bool OnFocus(int controlId);
   virtual bool OnAction(int actionId);
+
+  int m_FocusedControl;
 };
