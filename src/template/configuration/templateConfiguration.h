@@ -53,13 +53,11 @@
 #define ADSP_ADDON_USE_READSETTINGS
 //! If you define this, then your ADSP addon can get settings from xbmc.
 #define ADSP_ADDON_USE_GETSETTINGS
-//! ToDo!
-#define ADSP_ADDON_USE_DESTROY
-//! ToDo!
+//! Use stop function
 #define ADSP_ADDON_USE_STOP
-//! ToDo!
+//! Use free settings function
 #define ADSP_ADDON_USE_FREESETTINGS
-//! ToDo!
+//! Use addon announce function
 #define ADSP_ADDON_USE_ANNOUNCE
 //! If you define this, then your ADSP addon can have a settings GUI for processing modes.
 #define ADSP_ADDON_USE_MENUHOOK
