@@ -1,49 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
-	<zorder>1</zorder>
 	<defaultcontrol>9000</defaultcontrol>
-	<include>dialogeffect</include>
 	<allowoverlay>no</allowoverlay>
-	<coordinates>
-		<system>1</system>
-		<left>40</left>
-		<top>40</top>
-	</coordinates>
 	<controls>
-		<include>BehindDialogFadeOut</include>
-		<control type="image">
+		<!--<include>CommonBackground</include>-->
+		<!--<control type="image">
 			<left>0</left>
-			<top>0</top>
-			<width>1200</width>
-			<height>640</height>
-			<texture border="40">$VAR[SelectBack]</texture>
-		</control>
+			<top>100r</top>
+			<width>1280</width>
+			<height>100</height>
+			<texture>floor.png</texture>
+			<include>VisibleFadeEffect</include>
+			<visible>false</visible>
+		</control>-->
 		<control type="group">
-			<left>0</left>
-			<top>0</top>
-			<width>1200</width>
-			<height>40</height>
-			<control type="button">
-				<description>reload skin button, only for debugging</description>
-				<centerleft>600</centerleft>
-				<top>15</top>
-				<width>64</width>
-				<height>32</height>
-				<label>-</label>
-				<font>-</font>
-				<onclick>ReloadSkin()</onclick>
-				<texturefocus>DialogCloseButton-focus.png</texturefocus>
-				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>10</onleft>
-				<onright>10</onright>
-				<onup>10</onup>
-				<ondown>10</ondown>
-				<visible>system.getbool(debug.showloginfo)</visible>
+			<left>90</left>
+			<top>30</top>
+			<animation type="WindowOpen" reversible="false">
+				<!--<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300"/>-->
+				<effect type="fade" start="0" end="100" time="300"/>
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<!--<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300"/>-->
+				<effect type="fade" start="100" end="0" time="300"/>
+			</animation>
+			<control type="image">
+				<left>5</left>
+				<top>5</top>
+				<width>1090</width>
+				<height>630</height>
+				<texture border="15">ContentPanel.png</texture>
 			</control>
+			<control type="image">
+				<left>5</left>
+				<top>5</top>
+				<width>1090</width>
+				<height>630</height>
+				<texture border="15">ContentPanel.png</texture>
+			</control>
+			<!--<control type="image">
+				<left>5</left>
+				<top>625</top>
+				<width>1090</width>
+				<height>64</height>
+				<texture border="15">ContentPanelMirror.png</texture>
+			</control>-->
 			<control type="button">
-				<description>dialog close button</description>
-				<left>1120</left>
-				<top>15</top>
+				<description>Close Window button</description>
+				<left>980</left>
+				<top>11</top>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -56,566 +61,721 @@
 				<onup>1</onup>
 				<ondown>1</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
-				<include>VisibleFadeEffect</include>
+				<!--<include>VisibleFadeEffect</include>-->
 			</control>
 			<control type="image">
-				<description>dialog header image</description>
-				<centerleft>600</centerleft>
-				<top>16</top>
-				<width>1140</width>
-				<height>40</height>
+				<description>XConvolver Logo</description>
+				<left>30</left>
+				<top>15</top>
+				<width>220</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>special://home/addons/adsp.xconvolver/resources/skins/media/XConvolver-Logo.png</texture>
+			</control>
+			<control type="button" id="20">
+				<description>Settings level button</description>
+				<left>10</left>
+				<top>562</top>
+				<height>60</height>
+				<width>260</width>
+				<label>10037</label>
+				<textoffsetx>20</textoffsetx>
+				<textoffsety>28</textoffsety>
+				<align>right</align>
+				<aligny>top</aligny>
+				<font>font13caps</font>
+				<textcolor>selected</textcolor>
+				<focusedcolor>selected</focusedcolor>
+				<texturefocus border="5">MenuItemFO.png</texturefocus>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<pulseonselect>false</pulseonselect>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>9000</onup>
+				<ondown>20</ondown>
+				<onclick>SettingsLevelChange</onclick>
+			</control>
+			<control type="label">
+				<left>20</left>
+				<top>566</top>
+				<height>25</height>
+				<width>230</width> 
+				<label>31142</label> 
+				<font>font13_title</font> 
+				<textcolor>white</textcolor> 
+				<align>right</align> 
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<left>268</left>
+				<top>10</top>
+				<width>790</width>
+				<height>618</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<left>268</left>
+				<top>10</top>
+				<width>790</width>
+				<height>52</height>
 				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label">
-				<description>window header label</description>
-				<left>0</left>
+				<description>header label</description>
+				<left>300</left>
 				<top>20</top>
-				<width>1200</width>
+				<width>726</width>
 				<height>30</height>
-				<font>font13_title</font>
-				<label>$ADDON[adsp.xconvolver 31100]</label><!--XConvolver Settings: $LOCALIZE[31100]-->
+				<font>font16</font>
+				<label>$ADDON[adsp.xconvolver 31100]</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>selected</textcolor>
+				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
-		</control>
-		<control type="list" id="9000">
-			<description>processing mode selection list</description>
-			<left>30</left>
-			<top>100</top>
-			<width>200</width>
-			<height>200</height>
-			<onup>200</onup>
-			<ondown>200</ondown>
-			<onleft>9000</onleft>
-			<onright>9000</onright>
-			<orientation>vertical</orientation>
-			<scrolltime tween="sine" easing="out">200</scrolltime>
-			<itemlayout width="200" height="40">
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>228</width>
-					<height>40</height>
-					<texture border="5">button-nofocus.png</texture>
-				</control>
-				<control type="label">
-					<posx>5</posx>
-					<posy>0</posy>
-					<width>218</width>
-					<height>40</height>
-					<textcolor>grey3</textcolor>
-					<font>font13_title</font>
-					<aligny>center</aligny>
-					<align>center</align>
-					<info>ListItem.Label</info>
-					<scroll>false</scroll>
-					<scrollspeed>0</scrollspeed>
-				</control>
-			</itemlayout>
-			<focusedlayout width="228" height="40">
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>228</width>
-					<height>40</height>
-					<texture border="5">button-focus2.png</texture>
-					<animation effect="fade" start="100" end="50" time="0" condition="!Control.HasFocus(9000)">conditional</animation>
-				</control>
-				<control type="label">
-					<posx>5</posx>
-					<posy>0</posy>
-					<width>218</width>
-					<height>40</height>
-					<textcolor>white</textcolor>
-					<font>font13_title</font>
-					<aligny>center</aligny>
-					<align>center</align>
-					<info>ListItem.Label</info>
-					<scroll>false</scroll>
-					<scrollspeed>0</scrollspeed>
-				</control>
-			</focusedlayout>
-			<content>
-				<description>settings selection list</description>
-				<item id="91">
-					<label>$ADDON[adsp.xconvolver 31091]</label><!--Settings: $LOCALIZE[31091]-->
-					<visible>true</visible>
-					<onclick>noop</onclick>
-					<property name="currentMode">Preprocessing</property>
-				</item>
-				<item id="92">
-					<label>$ADDON[adsp.xconvolver 31092]</label><!--Filter Manager: $LOCALIZE[31092]-->
-					<visible>true</visible>
-					<onclick>noop</onclick>
-					<property name="currentMode">InputResampling</property>
-				</item>
-				<item id="93">
-					<label>$ADDON[adsp.xconvolver 31093]</label><!--Informations: $LOCALIZE[31093]-->
-					<visible>true</visible>
-					<onclick>noop</onclick>
-					<property name="currentMode">Masterprocessing</property>
-				</item>
-				<item id="94">
-					<label>$ADDON[adsp.xconvolver 31094]</label><!--Filter Scrappers: $LOCALIZE[31094]-->
-					<visible>true</visible>
-					<onclick>noop</onclick>
-					<property name="currentMode">Postprocessing</property>
-				</item>
-			</content>
-		</control>
-		<!--<control type="group">
-			<description>white borders and mode description</description>
-			<left>30</left>
-			<top>109</top>
-			<width>1140</width>
-			<height>500</height>
-			<control type="image">
-				<description>blue border</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>1140</width>
-				<height>500</height>
-				<texture border="5">button-focus3.png</texture>
-				<colordiffuse>80FFFFFF</colordiffuse>
-			</control>
-			<control type="label">
-				<description>current mode description label</description>
-				<left>10</left>
-				<top>0</top>
-				<width>1120</width>
-				<height>30</height>
-				<font>font12</font>
-				<align>left</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<selectedcolor>selected</selectedcolor>
-				<label>$INFO[Container(9000).ListItem.Label2]</label>
-			</control>
-		</control>
-		<control type="group" id="200">
-			<description>available- and active mode lists</description>
-			<left>30</left>
-			<top>150</top>
-			<width>1140</width>
-			<height>500</height>
-			<ondown>22</ondown>
-			<onup>9000</onup>
-			<control type="group">
-				<description>available modes group</description>
-				<left>0</left>
-				<top>0</top>
-				<width>570</width>
-				<height>360</height>
-				<control type="label">
-					<description>blue label for available modes</description>
-					<left>10</left>
-					<top>2</top>
-					<width>550</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<label>$LOCALIZE[15053] $LOCALIZE[15055] ($INFO[Container(20).NumItems])</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="image">
-					<description>available modes list border</description>
-					<left>10</left>
-					<top>30</top>
-					<width>538</width>
-					<height>350</height>
-					<texture border="5">button-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<description>debug available modes list border</description>
-					<left>10</left>
-					<top>30</top>
-					<width>550</width>
-					<height>350</height>
-					<texture border="5">button-nofocus.png</texture>
-					<visible>system.getbool(debug.showloginfo)</visible>
-				</control>
-				<control type="scrollbar" id="60">
-					<description>scrollbar for available modes list</description>
-					<left>540</left>
-					<top>30</top>
-					<width>25</width>
-					<height>350</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>20</onleft>
-					<onright>21</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-				</control>
-				<control type="list" id="20">
-					<description>available modes list</description>
-					<left>15</left>
-					<top>35</top>
-					<width>528</width>
-					<height>345</height>
-					<onup>9000</onup>
-					<ondown>22</ondown>
-					<onleft>21</onleft>
+			<control type="group" id="10000">
+				<control type="group" id="1000">
+					<description>settings area - Filter Manager</description>
+					<left>290</left>
+					<top>100</top>
+					<width>750</width>
+					<height>480</height>
+					<onleft>9000</onleft>
 					<onright>60</onright>
+					<onup>1000</onup>
+					<ondown>1000</ondown>
+					<visible>StringCompare(Container(900).ListItem.Property(settingsCategory),"FilterManager")</visible>
+					<!--<control type="image">
+						<description>white border test image</description>
+						<left>0</left>
+						<top>0</top>
+						<width>750</width>
+						<height>480</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>-->
+					<!--<control type="image">
+						<description>white border test image (filter info)</description>
+						<left>420</left>
+						<top>0</top>
+						<width>330</width>
+						<height>480</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>-->
+					<control type="group" id="1100">
+						<control type="button" id="1001">
+							<description>Add Filter button</description>
+							<left>0</left>
+							<top>0</top>
+							<height>40</height>
+							<width>190</width>
+							<onup>1001</onup>
+							<ondown>1041</ondown>
+							<onleft>9000</onleft>
+							<onright>1002</onright>
+							<font>font13</font>
+							<disabledcolor>15FFFFFF</disabledcolor>
+							<textcolor>grey3</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus border="5">button-focus2.png</texturefocus>
+							<label>Add Filter</label>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="1002">
+							<description>Remove Filter button</description>
+							<left>210</left>
+							<top>0</top>
+							<height>40</height>
+							<width>190</width>
+							<onup>1002</onup>
+							<ondown>1041</ondown>
+							<onleft>1001</onleft>
+							<onright>1040</onright>
+							<font>font13</font>
+							<disabledcolor>15FFFFFF</disabledcolor>
+							<textcolor>grey3</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus border="5">button-focus2.png</texturefocus>
+							<label>Remove all Filters</label>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+					<control type="image" id="1003">
+						<description>current filter image</description>
+						<left>420</left>
+						<top>240</top>
+						<width>330</width>
+						<height>200</height>
+						<texture aligny="center" align="left">$INFO[Container(1041).ListItem.Property(FilterImage)]</texture>
+						<aspectratio>keep</aspectratio>
+						<visible>!StringCompare(Container(1041).ListItem.Property(FilterImage),"")</visible>
+					</control>
+					<control type="scrollbar" id="1104">
+						<description>scrollbar for filter info textbox</description>
+						<left>730</left>
+						<top>0</top>
+						<width>25</width>
+						<height>240</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>1040</onleft>
+						<onright>1104</onright>
+						<ondown>1005</ondown>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+					<control type="textbox" id="1004">
+					   <description>current filter info textbox</description>
+					   <posx>430</posx>
+					   <posy>10</posy>
+					   <width>310</width>
+					   <height>200</height>
+					   <visible>true</visible>
+					   <colordiffuse>FFFFFFFF</colordiffuse>
+					   <font>font12</font>
+					   <textcolor>FFFFFFFF</textcolor>
+					   <pulseonselect></pulseonselect>
+					   <pagecontrol>1104</pagecontrol>
+					   <!--<autoscroll delay="3000" time="1000" repeat="10000">!Control.HasFocus(1004)</autoscroll>-->
+					   <label>Filter Informations:[CR][CR]Filtername[CR]Author: Max Mustermann[CR][CR]Available Sample Freq.: 44.1kHz, 48kHz, 96kHz, 192kHz[CR][CR]Available Channels: FL, FR, BR, ...[CR][CR]Lenght: 4s (176400 Samples)</label>
+					</control>
+					<control type="spincontrolex" id="1005">
+						<description>prefered optimization module SpinControlex</description>
+						<left>420</left>
+						<top>440</top>
+						<height>40</height>
+						<width>330</width>
+						<onup>1104</onup>
+						<ondown>1005</ondown>
+						<onleft>1040</onleft>
+						<onright>1005</onright>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+						<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+						<aligny>center</aligny>
+						<reverse>yes</reverse>
+						<label>Image Type</label>
+					</control>
+					<control type="scrollbar" id="1040">
+						<description>scrollbar for active filter list</description>
+						<left>395</left>
+						<top>50</top>
+						<width>25</width>
+						<height>430</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>1041</onleft>
+						<onright>1104</onright>
+						<onup></onup>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+					<control type="image">
+						<description>current filter white border image</description>
+						<left>0</left>
+						<top>50</top>
+						<width>400</width>
+						<height>430</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="list" id="1041">
+						<description>active filter list</description>
+						<left>5</left>
+						<top>55</top>
+						<width>390</width>
+						<height>420</height>
+						<onup>1100</onup>
+						<ondown>22</ondown>
+						<onleft>9000</onleft>
+						<onright>1040</onright>
+						<pagecontrol>1040</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="45" width="390">
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<width>390</width>
+								<height>40</height>
+								<texture border="5">button-nofocus.png</texture>
+							</control>
+							<control type="label">
+								<description>active addon name and mode name</description>
+								<left>10</left>
+								<top>0</top>
+								<width>380</width>
+								<height>40</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<scroll>false</scroll>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.Property(FilterName)] ($INFO[ListItem.Property(FilterChannel)], $INFO[ListItem.Property(LXCOptimization)])</label>
+							</control>
+						</itemlayout>
+						<focusedlayout height="65" width="390">
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<width>390</width>
+								<height>60</height>
+								<texture border="5">button-focus2.png</texture>
+								<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(1041)">conditional</animation>
+							</control>
+							<control type="label">
+								<description>addon name and mode name on focus</description>
+								<left>10</left>
+								<top>5</top>
+								<width>380</width>
+								<height>25</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>white</textcolor>
+								<scroll>false</scroll>
+								<selectedcolor>selected</selectedcolor>
+								<label>$INFO[ListItem.Property(FilterName)] ($INFO[ListItem.Property(FilterChannel)], $INFO[ListItem.Property(LXCOptimization)])</label>
+							</control>
+							<control type="label">
+								<description>ADSP-Mode description on focus</description>
+								<left>10</left>
+								<top>30</top>
+								<width>190</width>
+								<height>25</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<scroll>true</scroll>
+								<scrollsuffix>&gt;   &lt;</scrollsuffix>
+								<selectedcolor>selected</selectedcolor>
+								<label>Input Channel:  $INFO[ListItem.Property(InChannel)]</label>
+							</control>
+							<control type="label">
+								<description>ADSP-Mode description on focus</description>
+								<left>200</left>
+								<top>30</top>
+								<width>190</width>
+								<height>25</height>
+								<font>font12</font>
+								<align>left</align>
+								<aligny>center</aligny>
+								<textcolor>grey2</textcolor>
+								<scroll>true</scroll>
+								<scrollsuffix>&gt;   &lt;</scrollsuffix>
+								<selectedcolor>selected</selectedcolor>
+								<label>Output Channel: $INFO[ListItem.Property(OutChannel)]</label>
+							</control>
+						</focusedlayout>
+						<content>
+							<description>test filter items</description>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage">special://home/addons/adsp.xconvolver/IRs/Rooms/000_Stairway, University of York/zImages/speaker_microphone.jpg</property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>								
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>								
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage"></property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>
+								<property name="FilterImage">special://home/addons/adsp.xconvolver/IRs/Rooms/000_Stairway, University of York/zImages/stairway.jpg</property>
+							</item>
+							<item>
+								<visible>true</visible>
+								<onclick>noop</onclick>
+								<property name="FilterName">FilterName</property>
+								<property name="FilterChannel">Channel</property>
+								<property name="LXCOptimization">LXC_Native</property>
+								<property name="InChannel">FL</property>
+								<property name="OutChannel">FL</property>	
+								<property name="FilterImage">special://home/addons/adsp.xconvolver/IRs/Rooms/000_Stairway, University of York/zImages/speaker_microphone.jpg</property>
+							</item>
+						</content>
+					</control>
+				</control>
+				<control type="group" id="3000">
+					<description>settings area - Room Correction</description>
+					<left>290</left>
+					<top>100</top>
+					<width>750</width>
+					<height>435</height>
+					<itemgap>-1</itemgap>
 					<pagecontrol>60</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<itemlayout height="46" width="528">
-						<control type="image">
-							<left>0</left>
-							<top>3</top>
-							<width>528</width>
-							<height>40</height>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<left>15</left>
-							<top>8</top>
-							<width>30</width>
-							<height>30</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="image">
-							<left>15</left>
-							<top>8</top>
-							<width>30</width>
-							<height>30</height>
-							<texture aligny="center" align="left">defaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="label">
-							<description>active addon name and mode name</description>
-							<left>80</left>
-							<top>3</top>
-							<width>435</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>white</textcolor>
-							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
-						</control>
-					</itemlayout>
-					<focusedlayout height="66" width="528">
-						<control type="image">
-							<left>0</left>
-							<top>3</top>
-							<width>528</width>
-							<height>60</height>
-							<texture border="5">button-focus2.png</texture>
-							<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)">conditional</animation>
-						</control>
-						<control type="image">
-							<left>5</left>
-							<top>8</top>
-							<width>50</width>
-							<height>50</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="image">
-							<left>5</left>
-							<top>8</top>
-							<height>50</height>
-							<width>50</width>
-							<texture aligny="center" align="left">defaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="label">
-							<description>addon name and mode name on focus</description>
-							<left>80</left>
-							<top>3</top>
-							<width>435</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>white</textcolor>
-							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
-						</control>
-						<control type="label">
-							<description>ADSP-Mode description on focus</description>
-							<left>80</left>
-							<top>33</top>
-							<width>435</width>
-							<height>30</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Description)]</label>
-							<visible>!Control.HasFocus(20)</visible>
-						</control>
-						<control type="label">
-							<description>ADSP-Mode description on focus</description>
-							<left>80</left>
-							<top>33</top>
-							<width>435</width>
-							<height>30</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<scroll>true</scroll>
-							<scrollsuffix>&gt;   &lt;</scrollsuffix>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Description)]</label>
-							<visible>Control.HasFocus(20)</visible>
-						</control>
-					</focusedlayout>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>3000</onup>
+					<ondown>3000</ondown>
+					<visible>StringCompare(Container(900).ListItem.Property(settingsCategory),"RoomCorrection")</visible>
+					<control type="button" id="3001">
+						<description>start playing chirp signal</description>
+						<left>0</left>
+						<top>45</top>
+						<height>40</height>
+						<width>200</width>
+						<onup>3001</onup>
+						<ondown>3001</ondown>
+						<onleft>10000</onleft>
+						<onright>3002</onright>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<disabledcolor>15FFFFFF</disabledcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus border="5">button-focus2.png</texturefocus>
+						<align>center</align>
+						<label>play chirp signal</label>
+					</control>
+					<control type="button" id="3002">
+						<description>stop playing chirp signal</description>
+						<left>210</left>
+						<top>45</top>
+						<height>40</height>
+						<width>200</width>
+						<onup>3002</onup>
+						<ondown>3002</ondown>
+						<onleft>3001</onleft>
+						<onright>3002</onright>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<disabledcolor>15FFFFFF</disabledcolor>
+						<focusedcolor>white</focusedcolor>
+						<invalidcolor>invalid</invalidcolor>
+						<texturefocus border="5">button-focus2.png</texturefocus>
+						<label>stop chirp signal</label>
+						<align>center</align>
+					</control>
+					<control type="label" id="3003">
+						<description>current playing audio channel</description>
+						<left>40</left>
+						<top>0</top>
+						<height>40</height>
+						<width>730</width>
+						<font>font13</font>
+						<scroll>false</scroll>
+						<textcolor>grey2</textcolor>
+						<aligny>center</aligny>
+						<label>audio channel: not playing</label>
+					</control>
+				</control>
+				<control type="grouplist" id="8000">
+					<description>settings area - Settings</description>
+					<left>290</left>
+					<top>100</top>
+					<width>750</width>
+					<height>435</height>
+					<itemgap>-1</itemgap>
+					<pagecontrol>60</pagecontrol>
+					<onleft>9000</onleft>
+					<onright>60</onright>
+					<onup>8000</onup>
+					<ondown>8000</ondown>
+					<visible>StringCompare(Container(900).ListItem.Property(settingsCategory),"Settings")</visible>
+					<control type="spincontrolex" id="8001">
+						<description>prefered optimization module SpinControlex</description>
+						<left>0</left>
+						<top>0</top>
+						<height>40</height>
+						<width>750</width>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+						<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+						<aligny>center</aligny>
+						<reverse>yes</reverse>
+						<label>Select prefered LXC optimization module</label>
+					</control>
+					<control type="button" id="8002">
+						<description>Optimize system parameters button</description>
+						<left>0</left>
+						<top>0</top>
+						<height>40</height>
+						<width>750</width>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<invalidcolor>invalid</invalidcolor>
+						<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+						<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+						<label>Optimize system parameters...</label>
+					</control>
+					<!--<visible>StringCompare(Container(900).ListItem.Property(settingsCategory),"Settings")</visible>-->
 				</control>
 			</control>
-			<control type="group">
-				<left>570</left>
-				<top>0</top>
-				<width>570</width>
-				<height>360</height>
-				<control type="label">
-					<description>blue active modes label</description>
-					<left>10</left>
-					<top>2</top>
-					<width>550</width>
-					<height>30</height>
-					<font>font12_title</font>
-					<label>$LOCALIZE[15054] $LOCALIZE[15055] ($INFO[Container(21).NumItems]) </label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<textcolor>blue</textcolor>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="image">
-					<description>active modes list border</description>
-					<left>10</left>
-					<top>30</top>
-					<width>538</width>
-					<height>350</height>
-					<texture border="5">button-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<description>debug active modes list border</description>
-					<left>10</left>
-					<top>30</top>
-					<width>550</width>
-					<height>350</height>
-					<texture border="5">button-nofocus.png</texture>
-					<visible>system.getbool(debug.showloginfo)</visible>
-				</control>
-				<control type="scrollbar" id="61">
-					<description>scrollbar for active modes list</description>
-					<left>540</left>
-					<top>30</top>
-					<width>25</width>
-					<height>350</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>21</onleft>
-					<onright>20</onright>
-					<showonepage>false</showonepage>
+			<control type="group" id="9000">
+				<description>settings selection area</description>
+				<left>10</left>
+				<top>90</top>
+				<width>260</width>
+				<height>420</height>
+				<itemgap>-1</itemgap>
+				<onleft>9000</onleft>
+				<onright>10000</onright>
+				<onup>900</onup>
+				<ondown>20</ondown>
+				<control type="list" id="900">
+					<description>settings selection list</description>
+					<left>0</left>
+					<top>0</top>
+					<width>260</width>
+					<height>420</height>
+					<onup>900</onup>
+					<ondown>20</ondown>
+					<onleft>900</onleft>
+					<onright>10000</onright>
 					<orientation>vertical</orientation>
-				</control>
-				<control type="list" id="21">
-					<description>active modes list</description>
-					<left>15</left>
-					<top>35</top>
-					<width>538</width>
-					<height>345</height>
-					<onup>9000</onup>
-					<ondown>24</ondown>
-					<onleft>60</onleft>
-					<onright>61</onright>
-					<pagecontrol>61</pagecontrol>
-					<scrolltime>200</scrolltime>
-					<itemlayout height="46" width="528">
+					<scrolltime tween="sine" easing="out">200</scrolltime>
+					<itemlayout width="260" height="60">
 						<control type="image">
 							<left>0</left>
-							<top>3</top>
-							<width>528</width>
-							<height>40</height>
-							<texture border="5">button-nofocus.png</texture>
-						</control>
-						<control type="image">
-							<left>15</left>
-							<top>8</top>
-							<width>30</width>
-							<height>30</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="image">
-							<left>15</left>
-							<top>8</top>
-							<width>30</width>
-							<height>30</height>
-							<texture aligny="center" align="left">defaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+							<top>0</top>
+							<width>260</width>
+							<height>60</height>
+							<texture border="5">MenuItemNF.png</texture>
 						</control>
 						<control type="label">
-							<description>active addon name and mode name</description>
-							<left>80</left>
-							<top>3</top>
-							<width>435</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>60</height>
+							<textoffsetx>30</textoffsetx>
+							<textcolor>grey3</textcolor>
+							<font>font13_title</font>
 							<aligny>center</aligny>
-							<textcolor>white</textcolor>
+							<align>right</align>
+							<info>ListItem.Label</info>
 							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Number)].  $INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
+							<scrollspeed>0</scrollspeed>
 						</control>
 					</itemlayout>
-					<focusedlayout height="66" width="528">
+					<focusedlayout width="228" height="60">
 						<control type="image">
 							<left>0</left>
-							<top>3</top>
-							<width>528</width>
+							<top>0</top>
+							<width>260</width>
 							<height>60</height>
-							<texture border="5">button-focus2.png</texture>
-							<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(21)">conditional</animation>
-						</control>
-						<control type="image">
-							<left>5</left>
-							<top>8</top>
-							<width>50</width>
-							<height>50</height>
-							<texture aligny="center" align="left">$INFO[ListItem.Property(Icon)]</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>!StringCompare(ListItem.Property(Icon),"")</visible>
-						</control>
-						<control type="image">
-							<left>5</left>
-							<top>8</top>
-							<height>50</height>
-							<width>50</width>
-							<texture aligny="center" align="left">defaultAudioDSP.png</texture>
-							<aspectratio>keep</aspectratio>
-							<visible>StringCompare(ListItem.Property(Icon),"")</visible>
+							<texture border="5">MenuItemFO.png</texture>
+							<animation effect="fade" start="100" end="50" time="0" condition="!Control.HasFocus(900)">conditional</animation>
 						</control>
 						<control type="label">
-							<description>addon name and mode name on focus</description>
-							<left>80</left>
-							<top>3</top>
-							<width>435</width>
-							<height>40</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>60</height>
+							<textoffsetx>30</textoffsetx>
 							<textcolor>white</textcolor>
-							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Number)].  $INFO[ListItem.Property(AddonName)]: $INFO[ListItem.Property(Name)]</label>
-							<visible>true</visible>
-						</control>
-						<control type="label">
-							<description>ADSP-Mode description on focus</description>
-							<left>80</left>
-							<top>33</top>
-							<width>435</width>
-							<height>30</height>
-							<font>font12</font>
-							<align>left</align>
+							<font>font13_title</font>
 							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
+							<align>right</align>
+							<info>ListItem.Label</info>
 							<scroll>false</scroll>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Description)]</label>
-							<visible>!Control.HasFocus(21)</visible>
-						</control>
-						<control type="label">
-							<description>ADSP-Mode description on focus</description>
-							<left>80</left>
-							<top>33</top>
-							<width>435</width>
-							<height>30</height>
-							<font>font12</font>
-							<align>left</align>
-							<aligny>center</aligny>
-							<textcolor>grey2</textcolor>
-							<scroll>true</scroll>
-							<scrollsuffix>&gt;   &lt;</scrollsuffix>
-							<selectedcolor>selected</selectedcolor>
-							<label>$INFO[ListItem.Property(Description)]</label>
-							<visible>Control.HasFocus(21)</visible>
+							<scrollspeed>0</scrollspeed>
 						</control>
 					</focusedlayout>
+					<content>
+						<description>settings selection list contents</description>
+						<item id="9991">
+							<label>$ADDON[adsp.xconvolver 31093]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">FilterManager</property>
+						</item>
+						<item id="9992">
+							<label>$ADDON[adsp.xconvolver 31094]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">FilterScrappers</property>
+						</item>
+						<item id="9993">
+							<label>$ADDON[adsp.xconvolver 31097]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">RoomCorrection</property>
+						</item>
+						<item id="9994">
+							<label>$ADDON[adsp.xconvolver 31096]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">ChannelMixer</property>
+						</item>
+						<item id="9995">
+							<label>$ADDON[adsp.xconvolver 31091]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">Settings</property>
+						</item>
+						<item id="9996">
+							<label>$ADDON[adsp.xconvolver 31092]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">Benchmark</property>
+						</item>
+						<item id="9997">
+							<label>$ADDON[adsp.xconvolver 31095]</label>
+							<visible>true</visible>
+							<onclick>noop</onclick>
+							<property name="settingsCategory">Informations</property>
+						</item>
+					</content>
 				</control>
 			</control>
 		</control>
-		<control type="radiobutton" id="22">
-			<description>Default RadioButton</description>
-			<left>40</left>
-			<top>540</top>
-			<height>40</height>
-			<width>280</width>
-			<onup>20</onup>
-			<ondown>22</ondown>
-			<onleft>22</onleft>
-			<onright>23</onright>
-			<font>font13</font>
-			<textcolor>grey2</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<label>Enable continous saving</label>
+		<include>BehindDialogFadeOut</include>
+
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>2</height>
+			<texture>separator2.png</texture>
 		</control>
-		<control type="button" id="23">
-			<description>Apply changes button</description>
-			<left>328</left>
-			<top>540</top>
-			<height>40</height>
-			<width>250</width>
-			<onup>20</onup>
-			<ondown>23</ondown>
-			<onleft>22</onleft>
-			<onright>24</onright>
-			<font>font13</font>
-			<disabledcolor>15FFFFFF</disabledcolor>
-			<textcolor>grey3</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<label>Apply changes</label>
-			<align>center</align>
-			<aligny>center</aligny>
-		</control>
-		<control type="button" id="24">
-			<description>Clear active modes button</description>
-			<left>898</left>
-			<top>540</top>
-			<height>40</height>
-			<width>250</width>
-			<onup>21</onup>
-			<ondown>24</ondown>
-			<onleft>23</onleft>
-			<onright>24</onright>
-			<font>font13</font>
-			<disabledcolor>30FFFFFF</disabledcolor>
-			<textcolor>grey3</textcolor>
-			<focusedcolor>white</focusedcolor>
-			<texturefocus border="5">button-focus2.png</texturefocus>
-			<label>Clear active modes</label>
-			<align>center</align>
-			<aligny>center</aligny>
-		</control>-->
+		<include>CommonNowPlaying</include>
+		<!--<include>MainWindowMouseButtons</include>-->
+		<!--<include>Clock</include>-->
 	</controls>
 </window>

@@ -19,19 +19,35 @@ msgstr ""
 
 #settings labels
 msgctxt "#30000"
-msgid "FIR-XConvolver"
+msgid "Convolver"
 msgstr ""
 
-msgctxt "#30001"
-msgid "Setup FIR-XConvolver"
-msgstr ""
+#msgctxt "#30001"
+#msgid "Convolver Setup"
+#msgstr ""
 
 msgctxt "#30002"
-msgid "Some great description for XConvolver postprocessing mode."
+msgid "Some great description for Convolver postprocessing mode."
+msgstr ""
+
+msgctxt "#30003"
+msgid "Channel Mixer"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Channel Mixer Setup"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Some great description for Channel Mixer postprocessing mode."
 msgstr ""
 
 msgctxt "#30100"
-msgid "Some great help for XConvolver postprocessing mode."
+msgid "Some great help for Convolver postprocessing mode."
+msgstr ""
+
+msgctxt "#30101"
+msgid "Some great help for Channel Mixer postprocessing mode."
 msgstr ""
 
 # ====== Addon Settings Labels Start ======
@@ -82,23 +98,37 @@ msgstr ""
 
 
 # ====== GUI Labels Start ======
+# -- Settings Selection Labels Start --
 msgctxt "#31091"
 msgid "Settings"
 msgstr ""
 
 msgctxt "#31092"
-msgid "Filter Manager"
+msgid "Benchmark"
 msgstr ""
 
 msgctxt "#31093"
-msgid "Informations"
+msgid "Filter Manager"
 msgstr ""
 
 msgctxt "#31094"
 msgid "Filter Scrappers"
 msgstr ""
 
+msgctxt "#31095"
+msgid "Informations"
+msgstr ""
+
+msgctxt "#31096"
+msgid "Channel Mixer"
+msgstr ""
+
+msgctxt "#31097"
+msgid "Room Correction"
+msgstr ""
+# -- Settings Selection Labels End --
+
 msgctxt "#31100"
 msgid "XConvolver - Settings"
 msgstr ""
-# ====== GUI Labels Start ======
+# ====== GUI Labels End ======
