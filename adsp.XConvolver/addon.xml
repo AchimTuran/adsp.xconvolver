@@ -6,7 +6,8 @@
   provider-name="Achim Turan">
   <requires>
     <c-pluff version="0.1"/>
-    <import addon="kodi.adsp" version="0.1.6"/>
+    <import addon="kodi.adsp" version="0.1.8"/>
+	<import addon="kodi.audioengine" version="0.0.1"/>
   </requires>
   <extension
     point="kodi.adsp"
@@ -16,7 +17,7 @@
     library_windx="adsp.xconvolver.dll"
     library_android="libadsp.xconvolver.so" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">XConvolver Audio DSP Addon</summary>
+    <summary lang="en">XConvolver AudioDSP Addon</summary>
     <description lang="en">ToDo some great description. :-b</description>
     <disclaimer lang="en">Note: it's only a place holder! Don't install it.</disclaimer>
     <platform>all</platform>
