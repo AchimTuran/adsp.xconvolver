@@ -20,6 +20,8 @@
 
 
 #include "GUIDialogXConvolverSettings.h"
+#include <string>
+using namespace std;
 
 #define CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY  9003
 
@@ -30,6 +32,7 @@ CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
   {
     m_FocusedControl = FocusedControl;
   }
+  m_WaveSignal = NULL;
 }
 
 CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
@@ -42,6 +45,12 @@ bool CGUIDialogXConvolverSettings::OnInit()
   { // ToDo: Set Focus control
     m_window->SetFocusId(900);
     m_window->SetCurrentListPosition(m_FocusedControl);
+  }
+
+  m_WaveSignal = new CWaveSignal(g_strAddonPath + string("//measurement signals//ess_10_20000_fs44100_15s.wav"));
+  if(!m_WaveSignal)
+  {
+    // ToDo: throw error!
   }
 
   return true;
