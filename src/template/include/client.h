@@ -23,6 +23,7 @@
 #include <kodi/libXBMC_addon.h>
 #include <kodi/libKODI_adsp.h>
 #include <kodi/libKODI_guilib.h>
+#include <kodi/libKODI_audioengine.h>
 
 extern bool                          m_bCreated;
 extern std::string                   g_strUserPath;
@@ -30,3 +31,4 @@ extern std::string                   g_strAddonPath;
 extern ADDON::CHelper_libXBMC_addon *KODI;
 extern CHelper_libKODI_guilib       *GUI;
 extern CHelper_libKODI_adsp         *ADSP;
+extern CHelper_libKODI_audioengine  *AUDIOENGINE;

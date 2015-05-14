@@ -58,9 +58,10 @@ std::string   g_strUserPath       = "";
 std::string   g_strAddonPath      = "";
 
 
-CHelper_libXBMC_addon   *KODI       = NULL;
-CHelper_libKODI_adsp    *ADSP       = NULL;
-CHelper_libKODI_guilib  *GUI        = NULL;
+CHelper_libXBMC_addon       *KODI         = NULL;
+CHelper_libKODI_adsp        *ADSP         = NULL;
+CHelper_libKODI_guilib      *GUI          = NULL;
+CHelper_libKODI_audioengine *AUDIOENGINE  = NULL;
 
 /*
  *	ADSP Addon handling class
@@ -108,6 +109,17 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 		SAFE_DELETE(KODI);
 		return ADDON_STATUS_PERMANENT_FAILURE;
 	}
+
+  AUDIOENGINE = new CHelper_libKODI_audioengine;
+  if(!AUDIOENGINE->RegisterMe(hdl))
+  {
+    SAFE_DELETE(ADSP);
+    SAFE_DELETE(GUI);
+    SAFE_DELETE(KODI);
+    SAFE_DELETE(AUDIOENGINE);
+    return ADDON_STATUS_PERMANENT_FAILURE;
+  }
+
 	KODI->Log(LOG_DEBUG, "%s - Creating the Audio DSP add-on template", __FUNCTION__);
 
 	m_CurStatus     = ADDON_STATUS_UNKNOWN;
