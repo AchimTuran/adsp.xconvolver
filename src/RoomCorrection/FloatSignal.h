@@ -27,6 +27,8 @@
 class CFloatSignal : public TSignalGenerator<float>
 {
 public:
-  CFloatSignal(float *Samples, ulong SamplesAmount, ulong SampleFrequency);
-  virtual ulong get_Samples(void *Buffer, ulong Samples, ulong Offset = 0);
+  CFloatSignal();
+  CFloatSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency);
+
+  ulong StoreSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency);
 };

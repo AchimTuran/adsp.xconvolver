@@ -32,52 +32,144 @@ typedef unsigned int uint;
 class ISignalGenerator
 {
 public:
-  ISignalGenerator(ulong BufferedSamples, size_t SampleByteSize, ulong SampleFrequency)
+  ISignalGenerator()
   {
-    if(!BufferedSamples || SampleByteSize <= 0 || !SampleFrequency)
+    m_MaxBufferedSamples = 0;
+    m_MaxSampleByteSize = 0;
+    m_SampleFrequency = 0;
+    m_Samples = NULL;
+  }
+
+  ISignalGenerator(ulong MaxBufferedSamples, size_t MaxSampleByteSize, ulong SampleFrequency)
+  {
+    if(!Create(MaxBufferedSamples, MaxSampleByteSize, SampleFrequency))
     {
       // ToDo: throw error!
-    }
-
-    m_BufferedSamples = BufferedSamples;
-    m_SampleByteSize = SampleByteSize;
-    m_SampleFrequency = SampleFrequency;
-    m_Samples = new uchar[m_BufferedSamples*m_SampleByteSize];
-    if(!m_Samples)
-    {
-      // ToDo: throw error
     }
   }
 
   virtual ~ISignalGenerator()
   {
-    if(m_Samples)
+    Destroy();
+  }
+
+  bool Create(ulong MaxBufferedSamples, size_t MaxSampleByteSize, ulong SampleFrequency)
+  {
+    if(!MaxBufferedSamples || MaxSampleByteSize <= 0 || !SampleFrequency)
+    {
+      return false;
+    }
+
+    if(MaxBufferedSamples > m_MaxBufferedSamples && m_Samples)
     {
       delete [] m_Samples;
+      m_Samples = NULL;
+    }
+
+    m_MaxBufferedSamples = MaxBufferedSamples;
+    m_MaxSampleByteSize = MaxSampleByteSize;
+    m_SampleFrequency = SampleFrequency;
+    m_Samples = new uchar[m_MaxBufferedSamples*m_MaxSampleByteSize];
+    if(!m_Samples)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  void Destroy()
+  {
+    if(m_Samples)
+    {
+      delete[] m_Samples;
       m_Samples = NULL;
     }
   }
 
   ulong get_BufferedSamples()
   {
-    return m_BufferedSamples;
+    return m_MaxBufferedSamples;
   }
 
-  virtual ulong get_Samples(void *Buffer, ulong Samples, ulong Offset=0) = 0;
+  size_t get_SampleByteSize()
+  {
+    return m_MaxSampleByteSize;
+  }
+
+  virtual ulong get_Samples(void *Buffer, ulong MaxSamples, ulong Offset=0) = 0;
+  virtual ulong set_Samples(void *Buffer, ulong MaxSamples, ulong Offset=0) = 0;
 
 protected:
-  ulong   m_BufferedSamples;
-  size_t  m_SampleByteSize;
-  ulong   m_SampleFrequency;
   uchar   *m_Samples;
+
+private:
+  ulong   m_MaxBufferedSamples;
+  size_t  m_MaxSampleByteSize;
+  ulong   m_SampleFrequency;
 };
 
 template<typename T>
 class TSignalGenerator : public ISignalGenerator
 {
 public:
-  TSignalGenerator(ulong BufferedSamples, ulong SampleFrequency) :
-    ISignalGenerator(BufferedSamples, sizeof(T), SampleFrequency)
+  TSignalGenerator()
   {
+  }
+
+  TSignalGenerator(ulong MaxBufferedSamples, ulong SampleFrequency) :
+    ISignalGenerator(MaxBufferedSamples, sizeof(T), SampleFrequency)
+  {
+  }
+
+  bool Create(ulong MaxBufferedSamples, ulong SampleFrequency)
+  {
+    return ISignalGenerator::Create(MaxBufferedSamples, sizeof(T), SampleFrequency);
+  }
+
+  ulong get_Samples(void *Buffer, ulong MaxSamples, ulong Offset)
+  {
+    if(Offset >= get_BufferedSamples())
+    {
+      // show error!
+      return 0;
+    }
+
+    ulong samplesCopy = MaxSamples;
+    if(Offset + samplesCopy > get_BufferedSamples())
+    {
+      samplesCopy = get_BufferedSamples() - Offset;
+    }
+
+    if(!samplesCopy)
+    {
+      return 0;
+    }
+
+    memcpy(Buffer, m_Samples + Offset, get_SampleByteSize()*samplesCopy);
+    return samplesCopy;
+  }
+
+  ulong set_Samples(void *Buffer, ulong MaxSamples, ulong Offset)
+  {
+    if(Offset >= get_BufferedSamples() || !Buffer)
+    {
+      // show error!
+      return 0;
+    }
+
+    ulong samplesCopy = MaxSamples;
+    if(Offset + samplesCopy > get_BufferedSamples())
+    {
+      samplesCopy = get_BufferedSamples() - Offset;
+    }
+
+    if(!samplesCopy)
+    {
+      return 0;
+    }
+
+    memcpy(m_Samples + Offset, Buffer, get_SampleByteSize()*samplesCopy);
+    return samplesCopy;
   }
 };

@@ -42,8 +42,12 @@ CWaveSignal::CWaveSignal(string File)
     LXC_CWavLoader::reorderChannels(&waveFile);
   }
 
-  m_Signal = new CFloatSignal(waveFile.samples, waveFile.maxSamples, waveFile.sampleFrequency);
-  if(!m_Signal)
+  if(!m_Signal.Create(waveFile.maxSamples, waveFile.sampleFrequency))
+  {
+    // ToDo: throw error
+  }
+ 
+  if(!m_Signal.set_Samples(waveFile.samples, waveFile.maxSamples, waveFile.sampleFrequency))
   {
     // ToDo: throw error
   }
@@ -51,14 +55,9 @@ CWaveSignal::CWaveSignal(string File)
 
 CWaveSignal::~CWaveSignal()
 {
-  if(m_Signal)
-  {
-    delete m_Signal;
-    m_Signal = NULL;
-  }
 }
 
 ulong CWaveSignal::get_Samples(void *Buffer, ulong Samples, ulong Offset)
 {
-  return m_Signal->get_Samples(Buffer, Samples, Offset);
+  return m_Signal.get_Samples(Buffer, Samples, Offset);
 }

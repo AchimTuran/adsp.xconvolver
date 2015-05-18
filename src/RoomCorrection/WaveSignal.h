@@ -33,5 +33,5 @@ public:
 
 private:
   std::string m_File;
-  CFloatSignal *m_Signal;
+  CFloatSignal m_Signal;
 };

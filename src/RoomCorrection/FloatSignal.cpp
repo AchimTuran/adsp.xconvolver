@@ -24,36 +24,21 @@
 #include <memory.h>
 #include "FloatSignal.h"
 
-CFloatSignal::CFloatSignal(float *Samples, ulong SamplesAmount, ulong SampleFrequency) :
-  TSignalGenerator<float>(SamplesAmount, SampleFrequency)
+CFloatSignal::CFloatSignal()
 {
-  if(!Samples)
+}
+
+CFloatSignal::CFloatSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency)
+{
+  
+}
+
+ulong CFloatSignal::StoreSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency)
+{
+  if(!Create(MaxSamples, SampleFrequency))
   {
     // ToDo: throw error!
   }
 
-  memcpy(m_Samples, Samples, m_SampleByteSize*SamplesAmount);
-}
-
-ulong CFloatSignal::get_Samples(void *Buffer, ulong Samples, ulong Offset)
-{
-  if(Offset >= m_BufferedSamples)
-  {
-    // show error!
-    return 0;
-  }
-
-  ulong samplesCopy = Samples;
-
-  if(Offset + samplesCopy > m_BufferedSamples)
-  {  
-    samplesCopy = m_BufferedSamples - Offset;
-  }
-
-  if(samplesCopy)
-  {
-    memcpy(Buffer, m_Samples + Offset, m_SampleByteSize*samplesCopy);
-  }
-
-  return samplesCopy;
+  return set_Samples(Samples, MaxSamples, 0);
 }

@@ -47,7 +47,7 @@ bool CGUIDialogXConvolverSettings::OnInit()
     m_window->SetCurrentListPosition(m_FocusedControl);
   }
 
-  m_WaveSignal = new CWaveSignal(g_strAddonPath + string("//measurement signals//ess_10_20000_fs44100_15s.wav"));
+  m_WaveSignal = new CWaveSignal(g_strAddonPath + string("\\measurement signals\\ess_10_20000_fs44100_15s.wav"));
   if(!m_WaveSignal)
   {
     // ToDo: throw error!
@@ -88,5 +88,9 @@ bool CGUIDialogXConvolverSettings::OnAction(int actionId)
 
 void CGUIDialogXConvolverSettings::OnClose()
 {
-
+  if(!m_WaveSignal)
+  {
+    delete m_WaveSignal;
+    m_WaveSignal = NULL;
+  }
 }
