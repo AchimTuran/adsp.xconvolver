@@ -244,7 +244,7 @@ STREAM_FILTER *CFilterManager::CreateStreamFilter(uint SampleFrequency, uint Max
         {
           if (err == LXC_ERR_RESAMPLER)
           {
-            KODI->Log(LOG_ERROR, __FUNCTION__": Resampler error: %s", resampler->GetLastError());
+            KODI->Log(LOG_ERROR, "%s: Resampler error: %s", __FUNCTION__, resampler->GetLastError().c_str());
           }
 
           CFilterManager::DestroyStreamFilter(&streamFilter);

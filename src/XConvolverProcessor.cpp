@@ -116,7 +116,7 @@ bool CXConvolverProcessor::Init()
   m_StreamFilter = CFilterManager::Get()->CreateStreamFilter(m_StreamSettings.iProcessSamplerate, m_StreamSettings.iProcessFrames, g_fftModule, g_LXC_optModule);
   if (!m_StreamFilter)
   {
-    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create stream filter! Not enough free memory?");
+    KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
     return false;
   }
 
@@ -125,12 +125,12 @@ bool CXConvolverProcessor::Init()
   m_MaxBypassChannels = 0;
   for (uint ii = 0; ii < AE_DSP_CH_MAX; ii++)
   {
-    if (m_StreamSettings.lOutChannelPresentFlags & 1 << ii && m_StreamFilter->filters[ii].buffer)
+    if((m_StreamSettings.lOutChannelPresentFlags & 1 << ii) && m_StreamFilter->filters[ii].buffer)
     {
       m_ProcessingChannels[m_MaxProcessingChannels] = ii;
       m_MaxProcessingChannels++;
     }
-    else if (m_StreamSettings.lOutChannelPresentFlags & 1 << ii)
+    else if(m_StreamSettings.lOutChannelPresentFlags & 1 << ii)
     {
       m_BypassChannels[m_MaxBypassChannels] = ii;
       m_MaxBypassChannels++;
@@ -153,7 +153,7 @@ bool CXConvolverProcessor::Init()
   if (!m_fftPlans)
   {
     // ToDo: throw some error message
-    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create fft plans! Not enough free memory?");
+    KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
     return false;
   }
 
@@ -185,7 +185,7 @@ bool CXConvolverProcessor::Init()
   if (!m_Ringbuffers)
   {
     // ToDo: throw some error message
-    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffers! Not enough free memory?");
+    KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
     return false;
   }
 
@@ -194,7 +194,7 @@ bool CXConvolverProcessor::Init()
   if (!m_ResultBuffers)
   {
     // ToDo: throw some error message
-    KODI->Log(LOG_ERROR, __FUNCTION__": Could not create result buffers! Not enough free memory?");
+    KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
     return false;
   }
 
@@ -211,7 +211,7 @@ bool CXConvolverProcessor::Init()
     if (err != LXC_NO_ERR)
     {
       // ToDo: throw some error message
-      KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
+      KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
       return false;
     }
 
@@ -227,7 +227,7 @@ bool CXConvolverProcessor::Init()
     if (err != LXC_NO_ERR)
     {
       // ToDo: throw some error message
-      KODI->Log(LOG_ERROR, __FUNCTION__": Could not create input rinbuffer! Not enough free memory?");
+      KODI->Log(LOG_ERROR, "%s: Could not create stream filter! Not enough free memory?", __FUNCTION__);
       return false;
     }
   }
