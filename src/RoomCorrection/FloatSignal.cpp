@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2014-2015 Team KODI
  *      http://kodi.tv
@@ -30,7 +28,20 @@ CFloatSignal::CFloatSignal()
 
 CFloatSignal::CFloatSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency)
 {
+  if(!Samples)
+  {
+    // ToDo: throw error!
+  }
   
+  if(!Create(MaxSamples, SampleFrequency))
+  {
+    // ToDo: throw error!
+  }
+
+  if(set_Samples(Samples, MaxSamples, 0) < MaxSamples)
+  {
+    // ToDo: throw error!
+  }
 }
 
 ulong CFloatSignal::StoreSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency)
@@ -38,6 +49,7 @@ ulong CFloatSignal::StoreSignal(float *Samples, ulong MaxSamples, ulong SampleFr
   if(!Create(MaxSamples, SampleFrequency))
   {
     // ToDo: throw error!
+    return 0;
   }
 
   return set_Samples(Samples, MaxSamples, 0);

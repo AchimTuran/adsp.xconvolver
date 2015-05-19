@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2014-2015 Team KODI
  *      http://kodi.tv
@@ -24,6 +22,7 @@
 #include <stdio.h>
 using namespace std;
 
+#include <template/include/client.h>
 #include "WaveSignal.h"
 
 #include <LibXConvolverUtils/LXC_Signal/LXC_WavLoader.h>
@@ -34,8 +33,13 @@ CWaveSignal::CWaveSignal(string File)
   {
     // ToDo: throw error!
   }
+  KODI->Log(ADDON::LOG_DEBUG, "Trying to open filter file: %s", File.c_str());
   LXC_WavStruct waveFile;
-  LXC_CWavLoader::openWavFile(File, &waveFile);
+  waveFile.samples = NULL;
+  if(LXC_CWavLoader::openWavFile(File, &waveFile) <= 0)
+  {
+    KODI->Log(ADDON::LOG_DEBUG, "failed loading filter from file: %s", File.c_str());
+  }
 
   if(waveFile.maxChannels > 1)
   {
