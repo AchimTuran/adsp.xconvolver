@@ -25,7 +25,6 @@
  * ToDo: detailed description!
  */
 #include "XConvolverProcessor.h"
-#include "channelUpmixer.h"
 #include "filterManager.h"
 
 #include "client.h"
