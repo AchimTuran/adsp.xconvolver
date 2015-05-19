@@ -41,6 +41,7 @@ using namespace ADDON;
 
 // Helper functions
 string GetAddonPath();
+string GetUserPath();
 extern LXC_OPTIMIZATION_MODULE g_LXC_optModule;
 
 CADDONOptional::CADDONOptional()
@@ -237,4 +238,20 @@ string GetAddonPath()
   }
 
   return addonPath;
+}
+
+string GetUserPath()
+{
+  string userPath = g_strUserPath;
+  if (!(userPath.at(userPath.size() - 1) == '\\' ||
+    userPath.at(userPath.size() - 1) == '/'))
+  {
+#ifdef TARGET_WINDOWS
+    userPath += "\\";
+#else
+    userPath += "/";
+#endif
+  }
+
+  return userPath;
 }
