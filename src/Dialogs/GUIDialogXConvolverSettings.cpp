@@ -23,6 +23,12 @@
 #include <string>
 using namespace std;
 
+#if defined(TARGET_WINDOWS)
+  define PATH_SEPARATOR_SMYBOL string("\\")
+#else
+  #define PATH_EPARATOR_SYMBOL string("/")
+#endif
+
 #define CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY  9003
 
 CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
@@ -47,7 +53,7 @@ bool CGUIDialogXConvolverSettings::OnInit()
     m_window->SetCurrentListPosition(m_FocusedControl);
   }
 
-  m_WaveSignal = new CWaveSignal(g_strAddonPath + string("\\measurement signals\\ess_10_20000_fs44100_15s.wav"));
+  m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_EPARATOR_SYMBOL + string("measurement.signals") + PATH_EPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
   if(!m_WaveSignal)
   {
     // ToDo: throw error!
