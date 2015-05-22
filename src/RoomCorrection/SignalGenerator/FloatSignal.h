@@ -20,22 +20,15 @@
  */
 
 
-#include "template/include/GUIDialogBase.h"
-#include "RoomCorrection/SignalGenerator/WaveSignal.h"
 
-class CGUIDialogXConvolverSettings : public CGUIDialogBase
+#include "Interfaces/ITSignalGenerator.h"
+#include <string>
+
+class CFloatSignal : public TSignalGenerator<float>
 {
 public:
-  CGUIDialogXConvolverSettings(int FocusedControl=-1);
-  ~CGUIDialogXConvolverSettings();
+  CFloatSignal();
+  CFloatSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency);
 
-private:
-  virtual bool OnInit();
-  virtual bool OnClick(int controlId);
-  virtual bool OnFocus(int controlId);
-  virtual bool OnAction(int actionId);
-  virtual void OnClose();
-
-  int m_FocusedControl;
-  CWaveSignal *m_WaveSignal;
+  ulong StoreSignal(float *Samples, ulong MaxSamples, ulong SampleFrequency);
 };
