@@ -20,7 +20,7 @@
 
 
 
-#include "../AddonExceptions/TAddonException.h"
+#include <template/include/typedefs.h>
 
 class ISettingsElement
 {

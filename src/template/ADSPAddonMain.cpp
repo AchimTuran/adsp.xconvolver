@@ -33,6 +33,7 @@
 #include <template/include/ADSPAddonMain.h>
 #include "include/ADSPProcessorHandle.h"
 #include "include/ADSPAddonHandler.h"
+#include <template/include/typedefs.h>
 
 // includes your DSP Processor class
 #include ADSP_PROCESSOR_HEADER_FILE
@@ -71,70 +72,96 @@ extern "C" {
 void ADDON_ReadSettings(void)
 {
 #ifdef ADSP_ADDON_USE_READSETTINGS
-	g_AddonHandler.ReadSettings();
+  try
+  {
+    g_AddonHandler.ReadSettings();
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
 }
 
 ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
-	if (!hdl || !props)
-	{
-		return ADDON_STATUS_UNKNOWN;
-	}
-
-	AE_DSP_PROPERTIES* adspprops = (AE_DSP_PROPERTIES*)props;
-
-	KODI = new CHelper_libXBMC_addon;
-	if (!KODI->RegisterMe(hdl))
-	{
-		SAFE_DELETE(KODI);
-		return ADDON_STATUS_PERMANENT_FAILURE;
-	}
-
-	GUI = new CHelper_libKODI_guilib;
-	if (!GUI->RegisterMe(hdl))
-	{
-		SAFE_DELETE(GUI);
-		SAFE_DELETE(KODI);
-		return ADDON_STATUS_PERMANENT_FAILURE;
-	}
-
-	ADSP = new CHelper_libKODI_adsp;
-	if (!ADSP->RegisterMe(hdl))
-	{
-		SAFE_DELETE(ADSP);
-		SAFE_DELETE(GUI);
-		SAFE_DELETE(KODI);
-		return ADDON_STATUS_PERMANENT_FAILURE;
-	}
-
-  AUDIOENGINE = new CHelper_libKODI_audioengine;
-  if(!AUDIOENGINE->RegisterMe(hdl))
+  try
   {
+    if (!hdl || !props)
+    {
+      return ADDON_STATUS_UNKNOWN;
+    }
+
+    AE_DSP_PROPERTIES* adspprops = (AE_DSP_PROPERTIES*)props;
+
+    KODI = new CHelper_libXBMC_addon;
+    if (!KODI->RegisterMe(hdl))
+    {
+      SAFE_DELETE(KODI);
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+
+    GUI = new CHelper_libKODI_guilib;
+    if (!GUI->RegisterMe(hdl))
+    {
+      SAFE_DELETE(GUI);
+      SAFE_DELETE(KODI);
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+
+    ADSP = new CHelper_libKODI_adsp;
+    if (!ADSP->RegisterMe(hdl))
+    {
+      SAFE_DELETE(ADSP);
+      SAFE_DELETE(GUI);
+      SAFE_DELETE(KODI);
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+
+    AUDIOENGINE = new CHelper_libKODI_audioengine;
+    if(!AUDIOENGINE->RegisterMe(hdl))
+    {
+      SAFE_DELETE(ADSP);
+      SAFE_DELETE(GUI);
+      SAFE_DELETE(KODI);
+      SAFE_DELETE(AUDIOENGINE);
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+
+    KODI->Log(LOG_DEBUG, "%s - Creating Audio DSP add-on template", __FUNCTION__);
+
+    m_CurStatus     = ADDON_STATUS_UNKNOWN;
+    g_strUserPath   = adspprops->strUserPath;
+    g_strAddonPath  = adspprops->strAddonPath;
+
+    ADDON_ReadSettings();
+
+    if(!g_AddonHandler.Init())
+    {
+      return m_CurStatus;
+    }
+
+    m_CurStatus = ADDON_STATUS_OK;
+    m_bCreated = true;
+    m_iStreamsPresent = 0;
+    return m_CurStatus;
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    if(KODI)
+    {
+      ADDON_STRING_EXCEPTION_TO_LOG(e);
+    }
+
     SAFE_DELETE(ADSP);
     SAFE_DELETE(GUI);
     SAFE_DELETE(KODI);
     SAFE_DELETE(AUDIOENGINE);
-    return ADDON_STATUS_PERMANENT_FAILURE;
   }
 
-	KODI->Log(LOG_DEBUG, "%s - Creating the Audio DSP add-on template", __FUNCTION__);
-
-	m_CurStatus     = ADDON_STATUS_UNKNOWN;
-	g_strUserPath   = adspprops->strUserPath;
-	g_strAddonPath  = adspprops->strAddonPath;
-
-	ADDON_ReadSettings();
-
-	if(!g_AddonHandler.Init())
-	{
-		return m_CurStatus;
-	}
-
-	m_CurStatus = ADDON_STATUS_OK;
-	m_bCreated = true;
-	m_iStreamsPresent = 0;
-	return m_CurStatus;
+  return ADDON_STATUS_PERMANENT_FAILURE;
 }
 
 ADDON_STATUS ADDON_GetStatus()
@@ -144,16 +171,24 @@ ADDON_STATUS ADDON_GetStatus()
 
 void ADDON_Destroy()
 {
-	m_bCreated = false;
-  m_iStreamsPresent = 0;
+  try
+  {
+    m_bCreated = false;
+    m_iStreamsPresent = 0;
 
-  g_AddonHandler.Destroy();
+    g_AddonHandler.Destroy();
 
-  SAFE_DELETE(ADSP);
-  SAFE_DELETE(GUI);
-  SAFE_DELETE(KODI);
+    SAFE_DELETE(ADSP);
+    SAFE_DELETE(GUI);
+    SAFE_DELETE(KODI);
 
-  m_CurStatus = ADDON_STATUS_UNKNOWN;
+    m_CurStatus = ADDON_STATUS_UNKNOWN;
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 }
 
 bool ADDON_HasSettings()
@@ -168,26 +203,45 @@ bool ADDON_HasSettings()
 unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
 #ifdef ADSP_ADDON_USE_GETSETTINGS
-	return g_AddonHandler.GetSettings(sSet);
+  try
+  {
+    return g_AddonHandler.GetSettings(sSet);
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #else
 	(void) sSet; // Remove compiler warning
-	return 0;
 #endif
+
+	return 0;
 }
 
 ADDON_STATUS ADDON_SetSetting(const char *SettingName, const void *SettingValue)
 {
-	string settingName(SettingName);
-	if(!SettingValue)
-	{
-		return ADDON_STATUS_PERMANENT_FAILURE;
-	}
+  try
+  {
+    if(!SettingValue || !SettingName)
+    {
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+    string settingName(SettingName);
 
-#ifdef ADSP_ADDON_USE_SETTINGS
-	return g_AddonHandler.SetSetting( string(SettingName), SettingValue );
-#else
-	return ADDON_STATUS_OK;
-#endif
+  #ifdef ADSP_ADDON_USE_SETTINGS
+    return g_AddonHandler.SetSetting(string(SettingName), SettingValue);
+  #else
+    return ADDON_STATUS_OK;
+  #endif
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return ADDON_STATUS_PERMANENT_FAILURE;
 }
 
 void ADDON_Stop()
@@ -199,15 +253,36 @@ void ADDON_Stop()
 
 void ADDON_FreeSettings()
 {
-#ifdef ADSP_ADDON_USE_FREESETTINGS
-	g_AddonHandler.FreeSettings();
-#endif
+  #ifdef ADSP_ADDON_USE_FREESETTINGS
+    try
+    {
+      g_AddonHandler.FreeSettings();
+    }
+    catch(CAddonStringException &e)
+    {
+      m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+      ADDON_STRING_EXCEPTION_TO_LOG(e);
+    }
+  #endif
 }
 
 void ADDON_Announce(const char *Flag, const char *Sender, const char *Message, const void *Data)
 {
 #ifdef ADSP_ADDON_USE_ANNOUNCE
-	g_AddonHandler.Announce( string(Flag), string(Sender), string(Message), Data );
+  try
+  {
+    if(!Sender || !Message || !Data)
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Invalid input parameters!");
+    }
+
+    g_AddonHandler.Announce(string(Flag), string(Sender), string(Message), Data);
+  }
+	catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #else
 	// Remove compiler warnings
 	(void) Flag;
@@ -243,19 +318,29 @@ const char* GetMinimumGUIAPIVersion(void)
 
 AE_DSP_ERROR GetAddonCapabilities(AE_DSP_ADDON_CAPABILITIES* pCapabilities)
 {
-	if(pCapabilities == NULL)
-	{
-		return AE_DSP_ERROR_FAILED;
-	}
+  try
+  {
+    if(pCapabilities == NULL)
+    {
+      return AE_DSP_ERROR_FAILED;
+    }
 
-	pCapabilities->bSupportsInputProcess    = g_AddonHandler.SupportsInputProcess();
-	pCapabilities->bSupportsPreProcess      = g_AddonHandler.SupportsPreProcess();
-	pCapabilities->bSupportsMasterProcess   = g_AddonHandler.SupportsMasterProcess();
-	pCapabilities->bSupportsPostProcess     = g_AddonHandler.SupportsPostProcess();
-	pCapabilities->bSupportsInputResample   = g_AddonHandler.SupportsInputResample();
-	pCapabilities->bSupportsOutputResample  = g_AddonHandler.SupportsOutputResample();
+    pCapabilities->bSupportsInputProcess    = g_AddonHandler.SupportsInputProcess();
+    pCapabilities->bSupportsPreProcess      = g_AddonHandler.SupportsPreProcess();
+    pCapabilities->bSupportsMasterProcess   = g_AddonHandler.SupportsMasterProcess();
+    pCapabilities->bSupportsPostProcess     = g_AddonHandler.SupportsPostProcess();
+    pCapabilities->bSupportsInputResample   = g_AddonHandler.SupportsInputResample();
+    pCapabilities->bSupportsOutputResample  = g_AddonHandler.SupportsOutputResample();
 
-	return AE_DSP_ERROR_NO_ERROR;
+    return AE_DSP_ERROR_NO_ERROR;
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 const char* GetDSPName(void)
@@ -271,7 +356,17 @@ const char* GetDSPVersion(void)
 AE_DSP_ERROR CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const AE_DSP_MENUHOOK_DATA &Item)
 {
 #ifdef ADSP_ADDON_USE_MENUHOOK
-	return g_AddonHandler.CallMenuHook(Menuhook, Item);
+  try
+  {
+    return g_AddonHandler.CallMenuHook(Menuhook, Item);
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 #else
 	return AE_DSP_ERROR_NOT_IMPLEMENTED;
 #endif
@@ -283,23 +378,52 @@ AE_DSP_ERROR CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const AE_DSP_MENUHOOK
  */
 AE_DSP_ERROR StreamCreate(const AE_DSP_SETTINGS *AddonSettings, const AE_DSP_STREAM_PROPERTIES* pProperties, ADDON_HANDLE handle)
 {
-	return g_AddonHandler.StreamCreate( AddonSettings, pProperties, handle );
+  try
+  {
+    return g_AddonHandler.StreamCreate( AddonSettings, pProperties, handle );
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 AE_DSP_ERROR StreamDestroy(const ADDON_HANDLE handle)
 {
-	return g_AddonHandler.StreamDestroy(handle->dataIdentifier);
+  try
+  {
+    return g_AddonHandler.StreamDestroy(handle->dataIdentifier);
+  }
+	catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 AE_DSP_ERROR StreamInitialize(const ADDON_HANDLE handle, const AE_DSP_SETTINGS *AddonSettings)
 {
-	if( !AddonSettings )
-	{
-		KODI->Log(LOG_ERROR, "Null pointer were given!");
-		return AE_DSP_ERROR_UNKNOWN;
-	}
+  try
+  {
+    if(!AddonSettings)
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Invalid input parameters!");
+    }
 
-	return g_AddonHandler.StreamInitialize(handle, AddonSettings);
+    return g_AddonHandler.StreamInitialize(handle, AddonSettings);
+  }
+	catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 
@@ -308,30 +432,48 @@ AE_DSP_ERROR StreamInitialize(const ADDON_HANDLE handle, const AE_DSP_SETTINGS *
  */
 unsigned int PreProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int Mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->PreProcessNeededSamplesize(Mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PreProcessNeededSamplesize(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->PreProcessNeededSamplesize(Mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("PreProcessNeededSamplesize(...): uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
 
 float PreProcessGetDelay(const ADDON_HANDLE handle, unsigned int Mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->PreProcessGetDelay(Mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PreProcessGetDelay(...): uninitialized Stream was requested!");
-		return 0.0f;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->PreProcessGetDelay(Mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("PreProcessGetDelay(...): uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0.0f;
 }
 
 /*!
@@ -340,44 +482,71 @@ float PreProcessGetDelay(const ADDON_HANDLE handle, unsigned int Mode_id)
  */
 unsigned int InputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->InputResampleProcessNeededSamplesize();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "InputResampleProcessNeededSamplesize(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->InputResampleProcessNeededSamplesize();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("InputResampleProcessNeededSamplesize(...): uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
 
 int InputResampleSampleRate(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->InputResampleSampleRate();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "InputResampleSampleRate(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->InputResampleSampleRate();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("InputResampleSampleRate(...): uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
   
 float InputResampleGetDelay(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->InputResampleGetDelay();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "InputResampleGetDelay(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->InputResampleGetDelay();
+    }
+    else
+    {
+      KODI->Log(LOG_ERROR, "InputResampleGetDelay(...): uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0.0f;
 }
 
 /*!
@@ -386,72 +555,117 @@ float InputResampleGetDelay(const ADDON_HANDLE handle)
  */
 AE_DSP_ERROR MasterProcessSetMode(const ADDON_HANDLE handle, AE_DSP_STREAMTYPE Type, unsigned int Mode_id, int Unique_db_mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return  p->MasterProcessSetMode(Type, Mode_id, Unique_db_mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcessSetMode(...): uninitialized Stream was requested!");
-		return AE_DSP_ERROR_UNKNOWN;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return  p->MasterProcessSetMode(Type, Mode_id, Unique_db_mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 unsigned int MasterProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->MasterProcessNeededSamplesize();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcessNeededSamplesize(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->MasterProcessNeededSamplesize();
+    }
+    else
+    {
+      throw ("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+	return 0;
 }
 
 float MasterProcessGetDelay(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->MasterProcessGetDelay();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcessGetDelay(...): uninitialized Stream was requested!");
-		return 0.0f;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->MasterProcessGetDelay();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0.0f;
 }
 
 int MasterProcessGetOutChannels(const ADDON_HANDLE handle, unsigned long &Out_channel_present_flags)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->MasterProcessGetOutChannels(Out_channel_present_flags);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcessGetOutChannels(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->MasterProcessGetOutChannels(Out_channel_present_flags);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
 
 const char *MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->MasterProcessGetStreamInfoString();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcessGetStreamInfoString(...): uninitialized Stream was requested!");
-		return "";
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->MasterProcessGetStreamInfoString();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return "";
 }
 
 
@@ -461,30 +675,48 @@ const char *MasterProcessGetStreamInfoString(const ADDON_HANDLE handle)
  */
 unsigned int PostProcessNeededSamplesize(const ADDON_HANDLE handle, unsigned int Mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return  p->PostProcessNeededSamplesize(Mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PostProcessNeededSamplesize(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return  p->PostProcessNeededSamplesize(Mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+	return 0;
 }
 
 float PostProcessGetDelay(const ADDON_HANDLE handle, unsigned int Mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->PostProcessGetDelay(Mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PostProcessGetDelay(...): uninitialized Stream was requested!");
-		return 0.0f;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->PostProcessGetDelay(Mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0.0f;
 }
 
 /*!
@@ -493,44 +725,71 @@ float PostProcessGetDelay(const ADDON_HANDLE handle, unsigned int Mode_id)
  */
 unsigned int OutputResampleProcessNeededSamplesize(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->OutputResampleProcessNeededSamplesize();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "OutputResampleProcessNeededSamplesize(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->OutputResampleProcessNeededSamplesize();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
 
 int OutputResampleSampleRate(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->OutputResampleSampleRate();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "OutputResampleSampleRate(...): uninitialized Stream was requested!");
-		return 0;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->OutputResampleSampleRate();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0;
 }
 
 float OutputResampleGetDelay(const ADDON_HANDLE handle)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->OutputResampleGetDelay();
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "OutputResampleGetDelay(...): uninitialized Stream was requested!");
-		return 0.0f;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->OutputResampleGetDelay();
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return 0.0f;
 }
 
 /*!
@@ -539,123 +798,174 @@ float OutputResampleGetDelay(const ADDON_HANDLE handle)
 bool InputProcess(const ADDON_HANDLE handle, const float **Array_in, unsigned int Samples)
 {
 #ifdef ADSP_ADDON_USE_INPUTPROCESS
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->InputProcess(Array_in, Samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "InputProcess(...): uninitialized Stream was requested!");
-		return false;
-	}
-#else
-	return true;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->InputProcess(Array_in, Samples);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return true;
 }
 
 unsigned int InputResampleProcess(const ADDON_HANDLE handle, float **Array_in, float **Array_out, unsigned int Samples)
 {
 #ifdef ADSP_ADDON_USE_INPUTRESAMPLE
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->InputResampleProcess(Array_in, Array_out, Samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "InputResampleProcess(...): uninitialized Stream was requested!");
-		return 0;
-	}
-#else
-	return 0;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->InputResampleProcess(Array_in, Array_out, Samples);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return 0;
 }
 
 unsigned int PreProcess(const ADDON_HANDLE handle, unsigned int Mode_id, float **Array_in, float **Array_out, unsigned int Samples)
 {
 #ifdef ADSP_ADDON_USE_PREPROCESSING
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->PreProcess(Mode_id, Array_in, Array_out, Samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PreProcess(...): uninitialized Stream was requested!");
-		return 0;
-	}
-#else
-	return 0;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->PreProcess(Mode_id, Array_in, Array_out, Samples);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return 0;
 }
 
 unsigned int MasterProcess(const ADDON_HANDLE handle, float **Array_in, float **Array_out, unsigned int Samples)
 {
 #ifdef ADSP_ADDON_USE_MASTERPROCESS
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->MasterProcess(Array_in, Array_out, Samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "MasterProcess(...): uninitialized Stream was requested!");
-		return 0;
-	}
-#else
-	return 0;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->MasterProcess(Array_in, Array_out, Samples);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return 0;
 }
 
 unsigned int PostProcess(const ADDON_HANDLE handle, unsigned int Mode_id, float **Array_in, float **Array_out, unsigned int Samples)
 {
 #ifdef ADSP_ADDON_USE_POSTPROCESS
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->PostProcess(Mode_id, Array_in, Array_out, Samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "PostProcess(...): uninitialized Stream was requested!");
-		return 0;
-	}
-#else
-	return 0;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->PostProcess(Mode_id, Array_in, Array_out, Samples);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return 0;
 }
 
 unsigned int OutputResampleProcess(const ADDON_HANDLE handle, float **array_in, float **array_out, unsigned int samples)
 {
 #ifdef ADSP_ADDON_USE_OUTPUTRESAMPLE
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->OutputResampleProcess(array_in,  array_out, samples);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "OutputResampleProcess(...): uninitialized Stream was requested!");
-		return 0;
-	}
-#else
-	return 0;
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->OutputResampleProcess(array_in,  array_out, samples);
+    }
+    else
+    {
+      throw ADDON_STRING_XCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
 #endif
+
+	return 0;
 }
 
 AE_DSP_ERROR StreamIsModeSupported(const ADDON_HANDLE handle, AE_DSP_MODE_TYPE Type, unsigned int Mode_id, int Unique_db_mode_id)
 {
-	CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
-	if(p)
-	{
-		return p->StreamIsModeSupported(Type, Mode_id, Unique_db_mode_id);
-	}
-	else
-	{
-		KODI->Log(LOG_ERROR, "StreamIsModeSupported(...): uninitialized Stream was requested!");
-		return AE_DSP_ERROR_UNKNOWN;
-	}
+  try
+  {
+    CADSPProcessorHandle *p = g_AddonHandler.GetStream(handle->dataIdentifier);
+    if(p)
+    {
+      return p->StreamIsModeSupported(Type, Mode_id, Unique_db_mode_id);
+    }
+    else
+    {
+      throw ADDON_STRING_EXCEPTION_HANDLER("Uninitialized Stream was requested!");
+    }
+  }
+  catch(CAddonStringException &e)
+  {
+    m_CurStatus = ADDON_STATUS_PERMANENT_FAILURE;
+    ADDON_STRING_EXCEPTION_TO_LOG(e);
+  }
+
+  return AE_DSP_ERROR_FAILED;
 }
 
 }

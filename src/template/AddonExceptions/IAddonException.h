@@ -40,6 +40,26 @@ class IAddonException
 
     virtual T &what() = 0;
 
+    std::string Function()
+    {
+      return m_Function;
+    }
+
+    std::string Filename()
+    {
+      return m_Filename;
+    }
+
+    std::string Module()
+    {
+      return m_Module;
+    }
+
+    int Line()
+    {
+      return m_Line;
+    }
+
   protected:
     T m_Exception;
     std::string m_Function;

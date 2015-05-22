@@ -1,3 +1,27 @@
+#pragma once
+/*
+ *      Copyright (C) 2014-2015 Team KODI
+ *      http://kodi.tv
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+
+#include <string>
+#include <template/AddonExceptions/TAddonException.h>
+
 //--- typedefs input resample ---
 typedef int ADSP_INRESMOD_UNIQUEDBID;
 typedef char ADSP_INRESMOD_STR_NAMES;
@@ -88,4 +112,10 @@ typedef char ADSP_OUTRESMOD_OWN_IMAGE;
 typedef char ADSP_OUTRESMOD_OVERRIDE_IMAGE;
 
 // general typedefs
+typedef TAddonException<std::string> CAddonStringException;
+
+#define ADDON_STRING_EXCEPTION_HANDLER(ErrorStr)  CAddonStringException(ErrorStr, __func__, __FILE__, __LINE__)
+#define ADDON_STRING_MODULE_EXCEPTION_HANDLER(ErrorStr, Module)  CAddonStringException(ErrorStr, __func__, __FILE__, __LINE__, Module)
+#define ADDON_STRING_EXCEPTION_TO_LOG(Exception) KODI->Log(LOG_ERROR, "Function:%s File:%s: Line:%i ErrorMessage:%s", Exception.Function().c_str(), Exception.Filename().c_str(), Exception.what().c_str())
+
 //#define ADSP_PROCESSING_MODE_IDS typedef enum

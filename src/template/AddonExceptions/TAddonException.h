@@ -39,14 +39,8 @@ class TAddonException : public IAddonException<T>
     virtual T &what() { return IAddonException<T>::m_Exception; }
 };
 
-// type definitions
-typedef TAddonException<std::string> CAddonStringException;
-
 #if defined (TARGET_WINDOWS)
   #ifndef __func__
     #define __func__ __FUNCTION__
   #endif
 #endif
-
-#define ADDON_STRING_EXCEPTION_HANDLER(ErrorStr)  CAddonStringException(ErrorStr, __func__, __FILE__, __LINE__)
-#define ADDON_STRING_MODULE_EXCEPTION_HANDLER(ErrorStr, Module)  CAddonStringException(ErrorStr, __func__, __FILE__, __LINE__, Module)
