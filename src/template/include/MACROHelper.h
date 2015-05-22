@@ -18,7 +18,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#include "client.h"
+#include <template/include/ADSPAddonMain.h>
 #include "typedefs.h"
 #include "../configuration/templateConfiguration.h"
 

@@ -19,7 +19,7 @@
 
 
 
-#include "template/include/client.h"
+#include <template/include/ADSPAddonMain.h>
 #include "template/include/ADSPModeMessage.h"
 #include "template/AddonExceptions/TAddonException.h"
 

@@ -24,7 +24,7 @@
 #include <map>
 #include <list>
 #include <string>
-#include <template/include/client.h>
+#include <template/include/ADSPAddonMain.h>
 
 #include "TSettingsElement.h"
 

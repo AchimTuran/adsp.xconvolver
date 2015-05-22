@@ -25,7 +25,7 @@
  *
  */
 #include "../include/typedefs.h"
-#include "../include/client.h"
+#include <template/include/ADSPAddonMain.h>
 #include "../configuration/templateConfiguration.h"
 #include <string>
 

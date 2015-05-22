@@ -27,7 +27,7 @@
 #include "XConvolverProcessor.h"
 #include "filterManager.h"
 
-#include "client.h"
+#include <template/include/ADSPAddonMain.h>
 using namespace ADDON;
 
 LXC_OPTIMIZATION_MODULE g_LXC_optModule = LXC_OPT_NATIVE;

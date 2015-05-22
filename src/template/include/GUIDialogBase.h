@@ -19,7 +19,7 @@
  *
  */
 
-#include "client.h"
+#include <template/include/ADSPAddonMain.h>
 #include <string>
 #include <kodi/libKODI_guilib.h>
 

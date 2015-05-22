@@ -21,7 +21,7 @@
 #include <string>
 #include <kodi/util/util.h>
 
-#include "include/client.h"
+#include <template/include/ADSPAddonMain.h>
 
 #include "include/ADSPAddonHandler.h"
 #include "configuration/templateConfiguration.h"

@@ -22,7 +22,7 @@
 #include <stdio.h>
 using namespace std;
 
-#include <template/include/client.h>
+#include <template/include/ADSPAddonMain.h>
 #include "WaveSignal.h"
 
 #include <LibXConvolverUtils/LXC_Signal/LXC_WavLoader.h>

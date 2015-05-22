@@ -19,7 +19,7 @@
 */
 
 
-#include "client.h"
+#include <template/include/ADSPAddonMain.h>
 #include <string>
 
 using namespace std;

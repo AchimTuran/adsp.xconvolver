@@ -30,7 +30,7 @@
 #include <kodi/util/util.h>
 
 // include adsp template specific header files
-#include "include/client.h"
+#include <template/include/ADSPAddonMain.h>
 #include "include/ADSPProcessorHandle.h"
 #include "include/ADSPAddonHandler.h"
 

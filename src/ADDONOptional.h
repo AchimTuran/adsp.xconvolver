@@ -26,7 +26,9 @@
  * \file ADDONOptional.h
  * ToDo: detailed description!
  */
-#include "template/include/client.h"
+
+
+
 #include "template/configuration/templateConfiguration.h"
 #include "template/include/IADDONOptional.h"
 
