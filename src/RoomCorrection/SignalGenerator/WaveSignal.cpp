@@ -65,3 +65,18 @@ ulong CWaveSignal::get_Samples(void *Buffer, ulong Samples, ulong Offset)
 {
   return m_Signal.get_Samples(Buffer, Samples, Offset);
 }
+
+ulong CWaveSignal::get_BufferedSamples()
+{
+  return m_Signal.get_BufferedSamples();
+}
+
+uint  CWaveSignal::get_SampleFrequency()
+{
+  return m_Signal.get_SampleFrequency();
+}
+
+ulong CWaveSignal::get_Data(uint Offset, float* &Data)
+{
+  return m_Signal.get_Data(Offset, Data);
+}

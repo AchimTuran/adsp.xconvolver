@@ -30,6 +30,9 @@ public:
   CWaveSignal(std::string File);
   ~CWaveSignal();
   ulong get_Samples(void *Buffer, ulong Samples, ulong Offset = 0);
+  ulong get_BufferedSamples();
+  uint  get_SampleFrequency();
+  ulong get_Data(uint Offset, float* &Data);
 
 private:
   std::string m_File;

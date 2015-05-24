@@ -118,4 +118,10 @@ typedef TAddonException<std::string> CAddonStringException;
 #define ADDON_STRING_MODULE_EXCEPTION_HANDLER(ErrorStr, Module)  CAddonStringException(ErrorStr, __func__, __FILE__, __LINE__, Module)
 #define ADDON_STRING_EXCEPTION_TO_LOG(Exception) KODI->Log(LOG_ERROR, "Function:%s File:%s: Line:%i ErrorMessage:%s", Exception.Function().c_str(), Exception.Filename().c_str(), Exception.what().c_str())
 
+#if defined(TARGET_WINDOWS)
+  #define PATH_SEPARATOR_SYMBOL std::string("\\")
+#else
+  #define PATH_SEPARATOR_SYMBOL std::string("/")
+#endif
+
 //#define ADSP_PROCESSING_MODE_IDS typedef enum

@@ -20,8 +20,8 @@
  */
 
 
-#include "template/include/GUIDialogBase.h"
-#include "RoomCorrection/SignalGenerator/WaveSignal.h"
+#include <template/include/GUIDialogBase.h>
+#include "RoomCorrection/SignalPlayer.h"
 
 class CGUIDialogXConvolverSettings : public CGUIDialogBase
 {
@@ -37,5 +37,5 @@ private:
   virtual void OnClose();
 
   int m_FocusedControl;
-  CWaveSignal *m_WaveSignal;
+  CSignalPlayer *m_SignalPlayer;
 };

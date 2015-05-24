@@ -20,16 +20,14 @@
 
 
 #include "GUIDialogXConvolverSettings.h"
+#include <template/include/typedefs.h>
 #include <string>
 using namespace std;
 
-#if defined(TARGET_WINDOWS)
-  define PATH_SEPARATOR_SMYBOL string("\\")
-#else
-  #define PATH_EPARATOR_SYMBOL string("/")
-#endif
-
 #define CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY  9003
+#define BUTTON_START_CHIRP_SIGNAL                   3001
+#define BUTTON_STOP_CHIRP_SIGNAL                    3002
+#define LABEL_CURRENT_AUDIO_CHANNEL                 3003
 
 CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
   CGUIDialogBase("DialogXConvolverSettings.xml", false, true)
@@ -38,11 +36,16 @@ CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
   {
     m_FocusedControl = FocusedControl;
   }
-  m_WaveSignal = NULL;
 }
 
 CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
 {
+  if(m_SignalPlayer)
+  {
+    m_SignalPlayer->StopPlaying();
+    while(m_SignalPlayer->IsRunning());
+    delete m_SignalPlayer;
+  }
 }
 
 bool CGUIDialogXConvolverSettings::OnInit()
@@ -53,21 +56,40 @@ bool CGUIDialogXConvolverSettings::OnInit()
     m_window->SetCurrentListPosition(m_FocusedControl);
   }
 
-  m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_EPARATOR_SYMBOL + string("measurement.signals") + PATH_EPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
-  if(!m_WaveSignal)
-  {
-    // ToDo: throw error!
-  }
-
   return true;
 }
 
 bool CGUIDialogXConvolverSettings::OnClick(int controlId)
 {
-  //if (controlId == CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY)
-  //{
-  //  GUI->control_get
-  //}
+  switch(controlId)
+  {
+    case BUTTON_START_CHIRP_SIGNAL:
+      if(m_SignalPlayer)
+      {
+        m_SignalPlayer->StopPlaying();
+        delete m_SignalPlayer;
+      }
+
+      m_SignalPlayer = new CSignalPlayer();
+      m_SignalPlayer->Create();
+      m_SignalPlayer->StartPlaying();
+    break;
+
+    case BUTTON_STOP_CHIRP_SIGNAL:
+      if(m_SignalPlayer)
+      {
+        m_SignalPlayer->StopPlaying();
+        delete m_SignalPlayer;
+      }
+    break;
+
+    case LABEL_CURRENT_AUDIO_CHANNEL:
+    break;
+
+    default:
+      return false;
+    break;
+  }
 
   return true;
 }
@@ -90,13 +112,18 @@ bool CGUIDialogXConvolverSettings::OnAction(int actionId)
   {
     return false;
   }
+  //if(actionId == ADDON_ACTION_CLOSE_DIALOG ||
+  //   actionId == ADDON_ACTION_PREVIOUS_MENU ||
+  //   actionId == ADDON_ACTION_NAV_BACK)
+  //{
+  //  return OnClick(BUTTON_CANCEL);
+  //}
+  //else
+  //{
+  //  return false;
+  //}
 }
 
 void CGUIDialogXConvolverSettings::OnClose()
 {
-  if(!m_WaveSignal)
-  {
-    delete m_WaveSignal;
-    m_WaveSignal = NULL;
-  }
 }

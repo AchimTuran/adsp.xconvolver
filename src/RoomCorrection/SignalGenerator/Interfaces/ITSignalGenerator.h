@@ -97,6 +97,11 @@ public:
     return m_MaxSampleByteSize;
   }
 
+  ulong get_SampleFrequency()
+  {
+    return m_SampleFrequency;
+  }
+
   virtual ulong get_Samples(void *Buffer, ulong MaxSamples, ulong Offset=0) = 0;
   virtual ulong set_Samples(void *Buffer, ulong MaxSamples, ulong Offset=0) = 0;
 
@@ -171,5 +176,17 @@ public:
 
     memcpy(m_Samples + Offset, Buffer, get_SampleByteSize()*samplesCopy);
     return samplesCopy;
+  }
+
+  ulong get_Data(uint Offset, T* &Data)
+  {
+    if(Offset >= get_BufferedSamples())
+    {
+      Data = NULL;
+      return 0;
+    }
+
+    Data = (T*)m_Samples + Offset;
+    return this->get_BufferedSamples() - Offset;
   }
 };
