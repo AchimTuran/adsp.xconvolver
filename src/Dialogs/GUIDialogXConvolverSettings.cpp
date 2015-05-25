@@ -67,7 +67,9 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
       if(m_SignalPlayer)
       {
         m_SignalPlayer->StopPlaying();
+        while(m_SignalPlayer->IsRunning());
         delete m_SignalPlayer;
+        m_SignalPlayer = NULL;
       }
 
       m_SignalPlayer = new CSignalPlayer();
@@ -79,7 +81,9 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
       if(m_SignalPlayer)
       {
         m_SignalPlayer->StopPlaying();
+        while(m_SignalPlayer->IsRunning());
         delete m_SignalPlayer;
+        m_SignalPlayer = NULL;
       }
     break;
 

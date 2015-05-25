@@ -38,7 +38,7 @@ bool CSignalPlayer::Create()
 bool CSignalPlayer::Destroy()
 {
   // wait 500ms to stop the playing thread
-  CThread::StopThread(500);
+  CThread::StopThread(-1);
 
   if(m_pAudioStream)
   {
@@ -86,7 +86,7 @@ bool CSignalPlayer::StopPlaying()
 
 ulong CSignalPlayer::ProcessSamples(uint8_t *Data, unsigned int Frames)
 {
-  return (ulong)m_pAudioStream->AddData((uint8_t* const*)&Data, 0, Frames);
+  return (ulong)m_pAudioStream->AddData((uint8_t* const*)&Data, 0, Frames*sizeof(float))/sizeof(float);
 }
 
 void *CSignalPlayer::Process(void)
