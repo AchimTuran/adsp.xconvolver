@@ -19,7 +19,7 @@ CSignalPlayer::~CSignalPlayer()
 bool CSignalPlayer::Create()
 {
   m_WaveSignal = m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_SEPARATOR_SYMBOL + string("measurement.signals") + PATH_SEPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
-  m_pAudioStream = AUDIOENGINE->AudioEngine_MakeStream(AUDIOENGINE_FMT_FLOAT, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), AUDIOENGINE_CH_LAYOUT_1_0, AUDIOENGINESTREAM_AUTOSTART);
+  m_pAudioStream = AUDIOENGINE->AudioEngine_MakeStream(AE_FMT_FLOAT, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), AE_CH_LAYOUT_1_0, AESTREAM_AUTOSTART | AESTREAM_BYPASS_ADSP);
   if(!m_pAudioStream)
   {
     KODI->Log(LOG_ERROR, "Couldn't create CAddonAEStream for measurement signals!");
@@ -107,6 +107,7 @@ void *CSignalPlayer::Process(void)
   uint8_t *pSamples = NULL;
   while(!m_bStop)
   {
+    pSamples = NULL;
     ulong MaxSamples = m_WaveSignal->get_Data(playPos, (float*&)pSamples);
     if(!MaxSamples || !pSamples)
     {
@@ -125,6 +126,8 @@ void *CSignalPlayer::Process(void)
 
     //CThread::Sleep((uint32_t));
   }
+
+  while(m_pAudioStream->GetSpace() > 0);
 
   AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
 

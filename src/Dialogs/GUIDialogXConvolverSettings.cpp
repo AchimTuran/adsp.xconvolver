@@ -36,6 +36,7 @@ CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
   {
     m_FocusedControl = FocusedControl;
   }
+  m_SignalPlayer = NULL;
 }
 
 CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
