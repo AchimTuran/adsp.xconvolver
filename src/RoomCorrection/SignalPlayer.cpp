@@ -1,6 +1,8 @@
 #include <template/include/typedefs.h>
 #include "SignalPlayer.h"
 
+#include <iostream>
+
 using namespace ADDON;
 using namespace std;
 
@@ -112,8 +114,8 @@ void *CSignalPlayer::Process(void)
     pSamples = NULL;
     ulong MaxSamples = m_WaveSignal->get_Data(playPos, pSamples);
     if(!MaxSamples || !pSamples)
+    if(playPos >= m_WaveSignal->get_BufferedSamples())
     {
-      // TODO: error log message
       m_bStop = true;
       break;
     }
@@ -124,10 +126,9 @@ void *CSignalPlayer::Process(void)
     }
     
     if(playPos + MaxSamples > maxPlayPos)
-    {
-      m_bStop = true;
-      break;
-    }
+    pSamples = NULL;
+    ulong MaxSamples = m_WaveSignal->get_Data(playPos, (float*&)pSamples);
+    if(!MaxSamples || !pSamples)
 
     playPos += ProcessSamples((uint8_t*)pSamples, MaxSamples);
     CThread::Sleep(m_pAudioStream->GetDelay()*1000.0/2);
@@ -136,6 +137,7 @@ void *CSignalPlayer::Process(void)
   }
 
   //while(m_pAudioStream->Get > 0);
+
 
   AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
 
