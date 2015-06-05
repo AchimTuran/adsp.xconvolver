@@ -46,7 +46,7 @@ PortAudioSource::~PortAudioSource()
   }
 }
 
-bool PortAudioSource::Create(uint SampleFrequency, uint FrameSize)
+bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSize)
 {
   PaError paErr = IPortAudio::create_Device();
   if(paErr != paNoError)
@@ -66,7 +66,7 @@ int PortAudioSource::get_Devices(CCaptureDeviceList_t &DeviceList)
   CPaDeviceInfoVector_t PaDevices;
   IPortAudio::get_AvailableDevices(PaDevices);
 
-  for(uint ii = 0; ii < PaDevices.size(); ii++)
+  for(unsigned int ii = 0; ii < PaDevices.size(); ii++)
   {
     if(PaDevices[ii].deviceInfo->maxInputChannels > 0)
     {

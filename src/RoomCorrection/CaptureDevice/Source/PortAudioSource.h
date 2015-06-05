@@ -43,7 +43,7 @@ public:
   virtual ulong GetStoredSamples();
   virtual ulong GetSamples(float *Samples, ulong MaxSamples, ulong Offset = 0);
 
-protected:
+private:
   virtual int AudioCallback(const void *inputBuffer, void *outputBuffer,
                             unsigned long framesPerBuffer,
                             const PaStreamCallbackTimeInfo* timeInfo,

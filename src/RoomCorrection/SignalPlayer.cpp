@@ -130,7 +130,7 @@ void *CSignalPlayer::Process(void)
       break;
     }
 
-    CThread::Sleep(m_pAudioStream->GetDelay()*1000.0/2);
+    CThread::Sleep((uint32_t)(m_pAudioStream->GetDelay()*1000.0/2));
   }
 
   //while(m_pAudioStream->Get > 0);
