@@ -29,13 +29,18 @@ using namespace std;
 #define BUTTON_STOP_CHIRP_SIGNAL                    3002
 #define LABEL_CURRENT_AUDIO_CHANNEL                 3003
 
-CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedControl) :
+CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedSettingsPage) :
   CGUIDialogBase("DialogXConvolverSettings.xml", false, true)
 {
-  if (FocusedControl >= 0)
+  if(FocusedSettingsPage >= 0)
   {
-    m_FocusedControl = FocusedControl;
+    m_FocusedSettingsPage = FocusedSettingsPage;
   }
+  else
+  {
+    m_FocusedSettingsPage = -1;
+  }
+
   m_SignalPlayer = NULL;
 }
 
@@ -51,10 +56,17 @@ CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
 
 bool CGUIDialogXConvolverSettings::OnInit()
 {
-  if (m_FocusedControl >= 0)
+  if (m_FocusedSettingsPage >= 0)
   { // ToDo: Set Focus control
     m_window->SetFocusId(900);
-    m_window->SetCurrentListPosition(m_FocusedControl);
+    if(m_FocusedSettingsPage < m_window->GetListSize())
+    {
+      m_window->SetCurrentListPosition(m_FocusedSettingsPage);
+    }
+    else
+    {
+      m_window->SetCurrentListPosition(0);
+    }
   }
 
   return true;
@@ -72,7 +84,7 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         delete m_SignalPlayer;
         m_SignalPlayer = NULL;
       }
-
+      m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, "measure IR");
       m_SignalPlayer = new CSignalPlayer();
       m_SignalPlayer->Create();
       m_SignalPlayer->StartPlaying();
@@ -86,6 +98,7 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         delete m_SignalPlayer;
         m_SignalPlayer = NULL;
       }
+      m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, "stopped");
     break;
 
     case LABEL_CURRENT_AUDIO_CHANNEL:

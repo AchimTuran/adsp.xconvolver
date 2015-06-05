@@ -26,7 +26,7 @@
 class CGUIDialogXConvolverSettings : public CGUIDialogBase
 {
 public:
-  CGUIDialogXConvolverSettings(int FocusedControl=-1);
+  CGUIDialogXConvolverSettings(int FocusedSettingsPage=-1);
   ~CGUIDialogXConvolverSettings();
 
 private:
@@ -36,6 +36,6 @@ private:
   virtual bool OnAction(int actionId);
   virtual void OnClose();
 
-  int m_FocusedControl;
+  int m_FocusedSettingsPage;
   CSignalPlayer *m_SignalPlayer;
 };
