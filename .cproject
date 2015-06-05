@@ -75,7 +75,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/tinyxml/Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/KissFFT/Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/kodi-platform/Debug}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/computeDeviceInfo/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/asplib/utils/computeDeviceInfo/Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/asplib/Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/LibXConvolverCore/Debug}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/LibXConvolverUtils/Debug}&quot;"/>
