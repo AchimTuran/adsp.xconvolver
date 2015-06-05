@@ -32,3 +32,7 @@ extern ADDON::CHelper_libXBMC_addon *KODI;
 extern CHelper_libKODI_guilib       *GUI;
 extern CHelper_libKODI_adsp         *ADSP;
 extern CHelper_libKODI_audioengine  *AUDIOENGINE;
+
+#if defined(TARGET_WINDOWS) && defined(CreateDirectory)
+  #undef CreateDirectory
+#endif

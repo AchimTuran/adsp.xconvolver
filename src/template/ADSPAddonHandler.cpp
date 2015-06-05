@@ -64,6 +64,12 @@ CADSPAddonHandler::~CADSPAddonHandler()
 
 bool CADSPAddonHandler::Init()
 {
+  if(!KODI->DirectoryExists(g_strUserPath.c_str()))
+  {
+    KODI->Log(LOG_DEBUG, "Creating settings path: %s", g_strUserPath.c_str());
+    KODI->CreateDirectory(g_strUserPath.c_str());
+  }
+
   AE_DSP_MODES::AE_DSP_MODE modeSettings;
   string imagePath = g_strAddonPath + "\\";
   if(adspImageUserPath != "" || !adspImageUserPath.empty())

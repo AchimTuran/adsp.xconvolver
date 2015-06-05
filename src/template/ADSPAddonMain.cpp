@@ -56,7 +56,6 @@ ADDON_STATUS   m_CurStatus        = ADDON_STATUS_UNKNOWN;
 std::string   g_strUserPath       = "";
 std::string   g_strAddonPath      = "";
 
-
 CHelper_libXBMC_addon       *KODI         = NULL;
 CHelper_libKODI_adsp        *ADSP         = NULL;
 CHelper_libKODI_guilib      *GUI          = NULL;
