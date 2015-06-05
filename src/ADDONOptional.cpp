@@ -26,7 +26,7 @@
  * ToDo: detailed description!
  */
 #include <template/include/ADSPAddonMain.h>
-#include <asplib/utils/computeDeviceInfo/cpuInfo.h>
+#include <asplib/asplib_utils/computeDeviceInfo/cpuInfo.h>
 #include <string>
 using namespace std;
 using namespace ADDON;
