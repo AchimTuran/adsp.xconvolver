@@ -114,26 +114,23 @@ void *CSignalPlayer::Process(void)
     pSamples = NULL;
     ulong MaxSamples = m_WaveSignal->get_Data(playPos, pSamples);
     if(!MaxSamples || !pSamples)
-    if(playPos >= m_WaveSignal->get_BufferedSamples())
     {
       m_bStop = true;
       break;
+    }
+
+    playPos += ProcessSamples((uint8_t*)pSamples, MaxSamples);
+    if(playPos >= m_WaveSignal->get_BufferedSamples())
+    {
+      m_bStop = true;
     }
 
     if(m_bStop)
     {
       break;
     }
-    
-    if(playPos + MaxSamples > maxPlayPos)
-    pSamples = NULL;
-    ulong MaxSamples = m_WaveSignal->get_Data(playPos, (float*&)pSamples);
-    if(!MaxSamples || !pSamples)
 
-    playPos += ProcessSamples((uint8_t*)pSamples, MaxSamples);
     CThread::Sleep(m_pAudioStream->GetDelay()*1000.0/2);
-
-    //CThread::Sleep((uint32_t));
   }
 
   //while(m_pAudioStream->Get > 0);
