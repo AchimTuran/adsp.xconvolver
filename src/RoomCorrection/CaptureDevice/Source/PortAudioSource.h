@@ -23,6 +23,7 @@
 
 #include "RoomCorrection/CaptureDevice/Interfaces/ICaptureSource.h"
 #include "asplib_utils/audioInterfaces/IPortAudio.h"
+#include "kodi/threads/mutex.h"
 
 class PortAudioSource : public ICaptureSource, public asplib::IPortAudio
 {
@@ -48,4 +49,14 @@ protected:
                             const PaStreamCallbackTimeInfo* timeInfo,
                             PaStreamCallbackFlags statusFlags,
                             void *userData);
+
+  typedef enum
+  {
+    DEVICE_STOPPED = 0,
+    DEVICE_PAUSED,
+    DEVICE_CAPTURING
+  }DeviceStates_t;
+
+  PLATFORM::CMutex m_Mutex;
+  volatile DeviceStates_t m_State;
 };
