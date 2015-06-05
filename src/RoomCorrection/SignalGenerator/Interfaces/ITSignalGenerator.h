@@ -186,7 +186,7 @@ public:
       return 0;
     }
 
-    Data = (T*)m_Samples + Offset;
+    Data = ((T*)m_Samples) + Offset;
     return this->get_BufferedSamples() - Offset;
   }
 };

@@ -22,7 +22,7 @@ private:
   virtual void *Process(void);
   ulong ProcessSamples(uint8_t *Data, unsigned int Frames);
 
-  bool m_bStop;
+  volatile bool m_bStop;
   CAddonAEStream *m_pAudioStream;
   CWaveSignal *m_WaveSignal;
 };

@@ -74,6 +74,7 @@ bool CSignalPlayer::StopPlaying()
   if(!m_bStop)
   {
     m_bStop = true;
+    bool ret = CThread::StopThread(100);
   }
   else
   {
@@ -86,7 +87,7 @@ bool CSignalPlayer::StopPlaying()
 
 ulong CSignalPlayer::ProcessSamples(uint8_t *Data, unsigned int Frames)
 {
-  return (ulong)m_pAudioStream->AddData((uint8_t* const*)&Data, 0, Frames*sizeof(float))/sizeof(float);
+  return (ulong)m_pAudioStream->AddData((uint8_t* const*)&Data, 0, Frames);
 }
 
 void *CSignalPlayer::Process(void)
@@ -103,12 +104,13 @@ void *CSignalPlayer::Process(void)
   // add samples to audio engine until StopPlaying is called
   // or the end of the CFloatSignal is reached
   double sampleTimeMs = 1.0 / m_WaveSignal->get_SampleFrequency() * 1000.0;
-  unsigned int playPos = 0;
-  uint8_t *pSamples = NULL;
+  unsigned long playPos = 0;
+  const unsigned long maxPlayPos = m_WaveSignal->get_BufferedSamples();
+  float *pSamples = NULL;
   while(!m_bStop)
   {
     pSamples = NULL;
-    ulong MaxSamples = m_WaveSignal->get_Data(playPos, (float*&)pSamples);
+    ulong MaxSamples = m_WaveSignal->get_Data(playPos, pSamples);
     if(!MaxSamples || !pSamples)
     {
       // TODO: error log message
@@ -116,18 +118,24 @@ void *CSignalPlayer::Process(void)
       break;
     }
 
-    playPos += ProcessSamples(pSamples, MaxSamples);
-
-    if(playPos >= m_WaveSignal->get_BufferedSamples())
+    if(m_bStop)
+    {
+      break;
+    }
+    
+    if(playPos + MaxSamples > maxPlayPos)
     {
       m_bStop = true;
       break;
     }
 
+    playPos += ProcessSamples((uint8_t*)pSamples, MaxSamples);
+    CThread::Sleep(m_pAudioStream->GetDelay()*1000.0/2);
+
     //CThread::Sleep((uint32_t));
   }
 
-  while(m_pAudioStream->GetSpace() > 0);
+  //while(m_pAudioStream->Get > 0);
 
   AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
 
