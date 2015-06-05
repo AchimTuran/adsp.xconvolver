@@ -561,8 +561,8 @@
 						<height>40</height>
 						<width>200</width>
 						<onup>3001</onup>
-						<ondown>3001</ondown>
-						<onleft>10000</onleft>
+						<ondown>3004</ondown>
+						<onleft>9000</onleft>
 						<onright>3002</onright>
 						<font>font13</font>
 						<textcolor>grey2</textcolor>
@@ -579,7 +579,7 @@
 						<height>40</height>
 						<width>200</width>
 						<onup>3002</onup>
-						<ondown>3002</ondown>
+						<ondown>3004</ondown>
 						<onleft>3001</onleft>
 						<onright>3002</onright>
 						<font>font13</font>
@@ -602,6 +602,42 @@
 						<textcolor>grey2</textcolor>
 						<aligny>center</aligny>
 						<label>audio channel: not playing</label>
+					</control>
+					<control type="spincontrolex" id="3004">
+						<description>list for available sample frequencies</description>
+						<left>0</left>
+						<top>90</top>
+						<height>40</height>
+						<width>750</width>
+						<onup>3002</onup>
+						<ondown>3005</ondown>
+						<onleft>9000</onleft>
+						<onright>3004</onright>
+						<font>font13</font>
+						<scroll>false</scroll>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<reverse>yes</reverse>
+						<aligny>center</aligny>
+						<label>Select prefered sample frequency</label>
+					</control>
+					<control type="spincontrolex" id="3005">
+						<description>list for available capture devices</description>
+						<left>0</left>
+						<top>135</top>
+						<height>40</height>
+						<width>750</width>
+						<onup>3004</onup>
+						<ondown>3005</ondown>
+						<onleft>9000</onleft>
+						<onright>3005</onright>
+						<font>font13</font>
+						<scroll>false</scroll>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<reverse>yes</reverse>
+						<aligny>center</aligny>
+						<label>Select prefered capture device</label>
 					</control>
 				</control>
 				<control type="grouplist" id="8000">
