@@ -22,18 +22,30 @@
 
 
 #include "RoomCorrection/CaptureDevice/Interfaces/ICaptureSource.h"
+#include "asplib_utils/audioInterfaces/IPortAudio.h"
 
-class PortAudioSource : public ICaptureSource
+class PortAudioSource : public ICaptureSource, public asplib::IPortAudio
 {
 public:
-  virtual bool Create(uint SampleFrequency, uint FrameSize) = 0;
+  PortAudioSource();
+  ~PortAudioSource();
+
+  virtual bool Create(uint SampleFrequency, uint FrameSize);
+  virtual int  get_Devices(CCaptureDeviceList_t &DeviceList);
   virtual void Destroy() = 0;
 
-  virtual bool StartCapturing() = 0;
-  virtual bool StopCapturing() = 0;
-  virtual bool PauseCapturing() = 0;
-  virtual bool IsCapturing() = 0;
+  virtual bool StartCapturing();
+  virtual bool StopCapturing();
+  virtual bool PauseCapturing();
+  virtual bool IsCapturing();
 
-  virtual ulong GetStoredSamples() = 0;
-  virtual ulong GetSamples(float *Samples, ulong MaxSamples, ulong Offset = 0) = 0;
+  virtual ulong GetStoredSamples();
+  virtual ulong GetSamples(float *Samples, ulong MaxSamples, ulong Offset = 0);
+
+protected:
+  virtual int AudioCallback(const void *inputBuffer, void *outputBuffer,
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo* timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData);
 };

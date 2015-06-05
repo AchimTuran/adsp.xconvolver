@@ -23,6 +23,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 typedef unsigned long ulong;
 typedef unsigned int uint;
@@ -38,7 +39,8 @@ typedef enum CAPTURE_SOURCES
   CAPTURE_SOURCE_MAX
 };
 
-typedef std::map<std::string, CAPTURE_SOURCES> CCaptureDeviceList_t;
+typedef std::map<std::string, CAPTURE_SOURCES> CCaptureDeviceSourceList_t;
+typedef std::vector<std::string> CCaptureDeviceList_t;
 
 typedef enum DRC_ERROR
 {

@@ -27,6 +27,7 @@ class ICaptureSource
 {
 public:
   virtual bool Create(uint SampleFrequency, uint FrameSize=0) = 0;
+  virtual int  get_Devices(CCaptureDeviceList_t &DeviceList) = 0;
   virtual void Destroy() = 0;
 
   virtual bool StartCapturing() = 0;
