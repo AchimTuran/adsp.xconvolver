@@ -36,6 +36,9 @@ private:
   virtual bool OnAction(int actionId);
   virtual void OnClose();
 
-  int m_FocusedSettingsPage;
-  CSignalPlayer *m_SignalPlayer;
+  int                   m_FocusedSettingsPage;
+  CSignalPlayer         *m_SignalPlayer;
+  CCaptureDeviceList_t  m_CaptureDevices;
+  CAddonGUISpinControl  *m_SpincontrolexCaptureDevice;
+  CAddonGUISpinControl  *m_SpincontrolexSampleFrequency;
 };

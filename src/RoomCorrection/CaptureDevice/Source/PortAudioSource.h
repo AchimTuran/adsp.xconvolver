@@ -23,17 +23,22 @@
 
 #include "RoomCorrection/CaptureDevice/Interfaces/ICaptureSource.h"
 #include "asplib_utils/audioInterfaces/IPortAudio.h"
+#include "asplib_utils/buffers/TRingBuffer.h"
 #include "kodi/threads/mutex.h"
+#include <string>
+#include <vector>
 
 class PortAudioSource : public ICaptureSource, public asplib::IPortAudio
 {
 public:
   PortAudioSource();
+  PortAudioSource(asplib::CPaHostAPIVector_t &UsedHostAPIs);
   ~PortAudioSource();
 
-  virtual bool Create(uint SampleFrequency, uint FrameSize);
-  virtual int  get_Devices(CCaptureDeviceList_t &DeviceList);
-  virtual void Destroy() = 0;
+  virtual bool Create(unsigned int SampleFrequency, unsigned int FrameSize, std::string DeviceName="");
+  int  Get_Devices(CCaptureDeviceList_t &DeviceList);
+  virtual int  Get_Devices(CCaptureDeviceList_t &DeviceList, std::vector<uint> &SampleFrequencies);
+  virtual void Destroy();
 
   virtual bool StartCapturing();
   virtual bool StopCapturing();
@@ -59,4 +64,5 @@ private:
 
   PLATFORM::CMutex m_Mutex;
   volatile DeviceStates_t m_State;
+  asplib::TRingBuffer<float> *m_RingBuffer;
 };

@@ -39,8 +39,14 @@ typedef enum CAPTURE_SOURCES
   CAPTURE_SOURCE_MAX
 };
 
+typedef struct 
+{
+  std::string name;
+  std::vector<uint> sampleFrequencies;
+} CaptureDevice_t;
+
 typedef std::map<std::string, CAPTURE_SOURCES> CCaptureDeviceSourceList_t;
-typedef std::vector<std::string> CCaptureDeviceList_t;
+typedef std::vector<CaptureDevice_t> CCaptureDeviceList_t;
 
 typedef enum DRC_ERROR
 {

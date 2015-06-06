@@ -23,6 +23,7 @@
 #include "PortAudioSource.h"
 
 #include "template/include/ADSPAddonMain.h"
+#include <asplib/asplib_utils/strings/stdStringUtils.h>
 
 using namespace asplib;
 using namespace ADDON;
@@ -38,6 +39,12 @@ PortAudioSource::PortAudioSource()
   m_State = DEVICE_STOPPED;
 }
 
+PortAudioSource::PortAudioSource(asplib::CPaHostAPIVector_t &UsedHostAPIs) :
+  IPortAudio(UsedHostAPIs)
+{
+  m_State = DEVICE_STOPPED;
+}
+
 PortAudioSource::~PortAudioSource()
 {
   if(m_State != DEVICE_STOPPED)
@@ -46,20 +53,68 @@ PortAudioSource::~PortAudioSource()
   }
 }
 
-bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSize)
+bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSize, string DeviceName)
 {
-  PaError paErr = IPortAudio::create_Device();
+  vector<string> tokens;
+  strTokenizer(DeviceName, DEFAULT_SEPERATOR_STR, tokens);
+
+  PaDeviceIndex deviceIdx = paNoDevice;
+  if(tokens.size() == 3)
+  {
+    CPaDeviceInfoVector_t PaDevices;
+    IPortAudio::get_AvailableDevices(PaDevices);
+    for(unsigned int ii = 0; ii < PaDevices.size() && deviceIdx == paNoDevice; ii++)
+    {
+      if(PaDevices[ii].deviceName == tokens[2])
+      {
+        deviceIdx = PaDevices[ii].paDeviceIdx;
+      }
+    }
+  }
+
+  if(deviceIdx == paNoDevice)
+  {
+    KODI->Log(LOG_NOTICE, "Couldn't find capture device \"%s\" using default capture device", DeviceName.c_str());
+  }
+
+  // configure device
+  long frameSize = -1;
+  if(FrameSize > 0)
+  {
+    frameSize = FrameSize;
+  }
+  PaError paErr = IPortAudio::configure_Device(2, 0, SampleFrequency, deviceIdx, -1, paFloat32|paNonInterleaved, frameSize);
+  if(paErr != paNoError)
+  {
+    KODI->Log(LOG_ERROR, "Couldn't configure PortAudio device PortAudio Error: %s", get_PortAudioErrStr(paErr).c_str());
+    return false;
+  }
+
+  // create device
+  paErr = IPortAudio::create_Device();
   if(paErr != paNoError)
   {
     KODI->Log(LOG_ERROR, "Couldn't create PortAudio device PortAudio Error: %s", get_PortAudioErrStr(paErr).c_str());
     return false;
   }
+
+  // create buffer
+  m_RingBuffer = new TRingBuffer<float>(get_InputFrameSize()*4);
   
-  KODI->Log(LOG_DEBUG, "Successful created PortAudio Device: %s", m_InputDeviceInfo.deviceName.c_str());
+  KODI->Log(LOG_DEBUG, "Successful configured and created PortAudio Device: %s", m_InputDeviceInfo.deviceName.c_str());
+  KODI->Log(LOG_DEBUG, "  frameSize: %i",       IPortAudio::get_InputFrameSize());
+  KODI->Log(LOG_DEBUG, "  channel amount: %i",  IPortAudio::get_InputChannelAmount());
+  KODI->Log(LOG_DEBUG, "  sampleFrequency: %f", IPortAudio::get_InputSampleFrequency());
   return true;
 }
 
-int PortAudioSource::get_Devices(CCaptureDeviceList_t &DeviceList)
+int PortAudioSource::Get_Devices(CCaptureDeviceList_t &DeviceList)
+{
+  vector<uint> sampleFrequencies;
+  return Get_Devices(DeviceList, sampleFrequencies);
+}
+
+int PortAudioSource::Get_Devices(CCaptureDeviceList_t &DeviceList, vector<uint> &SampleFrequencies)
 {
   DeviceList.clear();
 
@@ -71,8 +126,30 @@ int PortAudioSource::get_Devices(CCaptureDeviceList_t &DeviceList)
     if(PaDevices[ii].deviceInfo->maxInputChannels > 0)
     {
       string PaHostAPIStr = Pa_GetHostApiInfo(PaDevices[ii].deviceInfo->hostApi)->name;
-      DeviceList.push_back( DEFAULT_SOURCE_NAME_STR + DEFAULT_SEPERATOR_STR +
-                            PaHostAPIStr + DEFAULT_SEPERATOR_STR + PaDevices[ii].deviceName);
+      CaptureDevice_t device;
+      device.name = DEFAULT_SOURCE_NAME_STR + DEFAULT_SEPERATOR_STR + PaHostAPIStr + DEFAULT_SEPERATOR_STR + PaDevices[ii].deviceName;
+
+      PaStreamParameters inParam;
+      inParam.channelCount = PaDevices[ii].deviceInfo->maxInputChannels;
+      inParam.device = PaDevices[ii].paDeviceIdx;
+      inParam.sampleFormat = paFloat32 | paNonInterleaved;
+      inParam.suggestedLatency = PaDevices[ii].deviceInfo->defaultLowInputLatency;
+      inParam.hostApiSpecificStreamInfo = NULL;
+
+      for(uint jj = 0; jj < SampleFrequencies.size(); jj++)
+      {
+        if(Pa_IsFormatSupported(&inParam, NULL, SampleFrequencies[jj]) == paNoError)
+        {
+          device.sampleFrequencies.push_back(SampleFrequencies[jj]);
+        }
+      }
+
+      if(device.sampleFrequencies.size() <= 0)
+      {
+        device.sampleFrequencies.push_back((uint)PaDevices[ii].deviceInfo->defaultSampleRate);
+      }
+
+      DeviceList.push_back(device);
     }
   }
 
@@ -180,7 +257,15 @@ int PortAudioSource::AudioCallback(const void *inputBuffer, void *outputBuffer,
 {
   if(m_State == DEVICE_CAPTURING)
   {
-
+    float **captureInput = (float**)inputBuffer;
+    if(m_RingBuffer->get_FreeSamples() < framesPerBuffer)
+    {
+      KODI->Log(LOG_ERROR, "Capture device buffer overflow! Aborting capturing.");
+      m_State = DEVICE_STOPPED;
+      return paAbort;
+    }
+    
+    m_RingBuffer->write(captureInput[0], framesPerBuffer);
   }
   else if(m_State == DEVICE_STOPPED)
   {
