@@ -31,6 +31,7 @@
 
 #include "template/configuration/templateConfiguration.h"
 #include "template/include/IADDONOptional.h"
+#include <asplib/asplib_utils/audioInterfaces/IPortAudio.h>
 
 class CADDONOptional : public IADDONOptional
 {
@@ -47,4 +48,7 @@ public:
 	virtual void ReadSettings(void);
 	virtual AE_DSP_ERROR CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const AE_DSP_MENUHOOK_DATA &Item);
 	virtual bool OptionalInit();
+
+private:
+  asplib::CPortAudioHandle m_PortAudioHandle;
 };

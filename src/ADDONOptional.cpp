@@ -44,7 +44,8 @@ string GetAddonPath();
 string GetUserPath();
 extern LXC_OPTIMIZATION_MODULE g_LXC_optModule;
 
-CADDONOptional::CADDONOptional()
+CADDONOptional::CADDONOptional() :
+  m_PortAudioHandle()
 {
 }
 
