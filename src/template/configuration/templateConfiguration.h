@@ -127,7 +127,7 @@
 #define ADSP_MAX_PRE_MODES		0
 //! If you have defined ADSP_ADDON_USE_POSTPROCESS, then you must define the amount 
 //! of available postprocess modes of your ADSP addon.
-#define ADSP_MAX_POST_MODES		2
+#define ADSP_MAX_POST_MODES		3
 //#define ADSP_MAX_OUTRES_MODES	1
 
 //--------------general settings--------------------------------------------
@@ -137,14 +137,16 @@
  */
 typedef enum
 {	
-  POST_PROCESS_CONVOLVER_MODE_ID = 1,             /*!< @brief Postprocessing mode id for XConvolver. */
-  POST_PROCESS_CHANNEL_MIXER_MODE_ID = 2          /*!< @brief Postprocessing mode id for XConvolver. */
+  POST_PROCESS_CONVOLVER_MODE_ID        = 1,        /*!< @brief Postprocessing mode id for XConvolver. */
+  POST_PROCESS_CHANNEL_MIXER_MODE_ID    = 2,        /*!< @brief Postprocessing mode id for XConvolver. */
+  POST_PROCESS_ROOM_CORRECTION_MODE_ID  = 3         /*!< @brief Postprocessing mode id for XConvolver. */
 }adspProcessingModeIDs;
 
 typedef enum 
 {
-	ID_MENU_XCONVOLVER_SETTINGS = 1,                /*!< @brief Menu id for XConvolver settings. */
-  ID_MENU_XCONVOLVER_INFORMATION = 2,             /*!< @brief Menu id for XConvolver settings. */
-  ID_MENU_XCONVOLVER_FILTER_MANAGER = 10,         /*!< @brief Menu id for XConvolver settings. */
-  ID_MENU_XCONVOLVER_CHANNEL_MIXER = 11           /*!< @brief Menu id for XConvolver settings. */  
+  ID_MENU_XCONVOLVER_SETTINGS         = 1,         /*!< @brief Menu id for XConvolver settings. */
+  ID_MENU_XCONVOLVER_INFORMATION      = 2,         /*!< @brief Menu id for XConvolver settings. */
+  ID_MENU_XCONVOLVER_FILTER_MANAGER   = 10,        /*!< @brief Menu id for XConvolver settings. */
+  ID_MENU_XCONVOLVER_CHANNEL_MIXER    = 11,        /*!< @brief Menu id for XConvolver settings. */  
+  ID_MENU_XCONVOLVER_ROOM_CORRECTION  = 12         /*!< @brief Menu id for XConvolver settings. */
 }adspMENUIDs;

@@ -87,21 +87,45 @@ std::string adspImageUserPath = "resources//skins//media";
 
 
 // configuration for postprocess modes
-ADSP_POSTMOD_UNIQUEDBID adspPostUniqueDbId[ADSP_MAX_POST_MODES] = {-1};
-ADSP_POSTMOD_STR_NAMES adspPostStrNames[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {"parametric EQ"};
+ADSP_POSTMOD_UNIQUEDBID adspPostUniqueDbId[ADSP_MAX_POST_MODES] = {-1,
+                                                                   -1,
+                                                                   -1};
+ADSP_POSTMOD_STR_NAMES adspPostStrNames[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {"XConvolver",
+                                                                                            "Channel Mixer",
+                                                                                            "Room Correction"};
 
-ADSP_POSTMOD_MODE_NUM adspPostModeNum[ADSP_MAX_POST_MODES] = {POST_PROCESS_CONVOLVER_MODE_ID, POST_PROCESS_CHANNEL_MIXER_MODE_ID};
-ADSP_POSTMOD_TYPE_FLAGS adspPostTypeFlags[ADSP_MAX_POST_MODES] = {AE_DSP_PRSNT_ASTREAM_BASIC | AE_DSP_PRSNT_ASTREAM_MUSIC | AE_DSP_PRSNT_ASTREAM_MOVIE | AE_DSP_PRSNT_ASTREAM_GAME | AE_DSP_PRSNT_ASTREAM_APP | AE_DSP_PRSNT_ASTREAM_MESSAGE | AE_DSP_PRSNT_ASTREAM_PHONE};
-ADSP_POSTMOD_SETTINGS_DIALOG adspPostSettings[ADSP_MAX_POST_MODES] = {true, true};
-ADSP_POSTMOD_DISABLED adspPostDisabled[ADSP_MAX_POST_MODES] = {true, true};
+ADSP_POSTMOD_MODE_NUM adspPostModeNum[ADSP_MAX_POST_MODES] = {POST_PROCESS_CONVOLVER_MODE_ID,
+                                                              POST_PROCESS_CHANNEL_MIXER_MODE_ID,
+                                                              POST_PROCESS_ROOM_CORRECTION_MODE_ID};
+ADSP_POSTMOD_TYPE_FLAGS adspPostTypeFlags[ADSP_MAX_POST_MODES] = {AE_DSP_PRSNT_ASTREAM_BASIC | AE_DSP_PRSNT_ASTREAM_MUSIC | AE_DSP_PRSNT_ASTREAM_MOVIE | AE_DSP_PRSNT_ASTREAM_GAME | AE_DSP_PRSNT_ASTREAM_APP | AE_DSP_PRSNT_ASTREAM_MESSAGE | AE_DSP_PRSNT_ASTREAM_PHONE,
+                                                                  AE_DSP_PRSNT_ASTREAM_BASIC | AE_DSP_PRSNT_ASTREAM_MUSIC | AE_DSP_PRSNT_ASTREAM_MOVIE | AE_DSP_PRSNT_ASTREAM_GAME | AE_DSP_PRSNT_ASTREAM_APP | AE_DSP_PRSNT_ASTREAM_MESSAGE | AE_DSP_PRSNT_ASTREAM_PHONE,
+                                                                  AE_DSP_PRSNT_ASTREAM_BASIC | AE_DSP_PRSNT_ASTREAM_MUSIC | AE_DSP_PRSNT_ASTREAM_MOVIE | AE_DSP_PRSNT_ASTREAM_GAME | AE_DSP_PRSNT_ASTREAM_APP | AE_DSP_PRSNT_ASTREAM_MESSAGE | AE_DSP_PRSNT_ASTREAM_PHONE};
+ADSP_POSTMOD_SETTINGS_DIALOG adspPostSettings[ADSP_MAX_POST_MODES] = {true,
+                                                                      true,
+                                                                      true};
+ADSP_POSTMOD_DISABLED adspPostDisabled[ADSP_MAX_POST_MODES] = {true,
+                                                               true,
+                                                               true};
 
-ADSP_POSTMOD_NAME adspPostName[ADSP_MAX_POST_MODES] = {30000};
-ADSP_POSTMOD_SETUP_NAME adspPostSetupName[ADSP_MAX_POST_MODES] = {30001};
-ADSP_POSTMOD_DESCRIPTION adspPostDescription[ADSP_MAX_POST_MODES] = {30002};
-ADSP_POSTMOD_HELP adspPostHelp[ADSP_MAX_POST_MODES] = {30003};
+ADSP_POSTMOD_NAME adspPostName[ADSP_MAX_POST_MODES] = {30000,
+                                                       30004,
+                                                       30008};
+ADSP_POSTMOD_SETUP_NAME adspPostSetupName[ADSP_MAX_POST_MODES] = {30001,
+                                                                  30005,
+                                                                  30009};
+ADSP_POSTMOD_DESCRIPTION adspPostDescription[ADSP_MAX_POST_MODES] = {30002,
+                                                                     30006,
+                                                                     30010};
+ADSP_POSTMOD_HELP adspPostHelp[ADSP_MAX_POST_MODES] = {30003,
+                                                       30007,
+                                                       30011};
 
-ADSP_POSTMOD_OWN_IMAGE adspPostOwnImage[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {"adsp.parametric.eq_modeLogo.png"};
-ADSP_POSTMOD_OVERRIDE_IMAGE adspPostOverrideImage[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {""};
+ADSP_POSTMOD_OWN_IMAGE adspPostOwnImage[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {"logo.png",
+                                                                                            "logo.png",
+                                                                                            "logo.png"};
+ADSP_POSTMOD_OVERRIDE_IMAGE adspPostOverrideImage[ADSP_MAX_POST_MODES][AE_DSP_ADDON_STRING_LENGTH] = {"",
+                                                                                                      "",
+                                                                                                      ""};
 
 
 //// configuration for output resample
