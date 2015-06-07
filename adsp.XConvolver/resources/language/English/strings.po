@@ -19,27 +19,51 @@ msgstr ""
 
 #settings labels
 msgctxt "#30000"
-msgid "Convolver"
+msgid "XConvolver"
 msgstr ""
 
 #msgctxt "#30001"
-#msgid "Convolver Setup"
+#msgid "XConvolver Setup"
 #msgstr ""
 
 msgctxt "#30002"
-msgid "Some great description for Convolver postprocessing mode."
+msgid "This mode allows to configure an individual and flexible convolution engine."
 msgstr ""
 
 msgctxt "#30003"
-msgid "Channel Mixer"
+msgid "XConvolver Help Text"
 msgstr ""
 
 msgctxt "#30004"
-msgid "Channel Mixer Setup"
+msgid "Channel Mixer"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Some great description for Channel Mixer postprocessing mode."
+msgid "Channel Mixer Setup"
+msgstr ""
+
+msgctxt "#30006"
+msgid "This mode can be used to setup channel mixing or reordering."
+msgstr ""
+
+msgctxt "#30007"
+msgid "Channel Mixer Help Text"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Room Correction"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Room Correction Setup"
+msgstr ""
+
+msgctxt "#30010"
+msgid "This mode can be used to to measure and setup your room correction filters."
+msgstr ""
+
+msgctxt "#30011"
+msgid "Room Correction Help Text"
 msgstr ""
 
 msgctxt "#30100"
