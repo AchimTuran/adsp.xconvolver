@@ -1,5 +1,7 @@
 #include <template/include/typedefs.h>
 #include "SignalPlayer.h"
+#include "utils/stdStringUtils.h"
+#include <sndfile/sndfile.hh>
 
 #include <iostream>
 
@@ -51,11 +53,20 @@ bool CSignalPlayer::Create(uint SampleFrequency, string CaptureDevice)
     return false;
   }
 
+  if(!KODI->DirectoryExists(generateFilePath(g_strUserPath, "measurements").c_str()))
+  {
+    KODI->CreateDirectory(generateFilePath(g_strUserPath, "measurements").c_str());
+  }
+
+  memset(m_Samples, 0, sizeof(float)*2048);
+
   if(!m_CaptureDevice->Create(SampleFrequency, 2048, CaptureDevice))
   {
     KODI->Log(LOG_ERROR, "Couldn't create capture device!");
     return false;
   }
+
+  m_CaptureDevice->get_InputFrameSize();
   
   if(CThread::IsRunning())
   {
@@ -144,7 +155,15 @@ void *CSignalPlayer::Process(void)
   {
     KODI->Log(LOG_ERROR, "%s: called with no audio stream!", __func__);
     return NULL;
-  }  
+  }
+
+  string wavFilename = generateFilePath(generateFilePath(g_strUserPath, "measurements"), "capture.wav");
+  SndfileHandle captureWave(wavFilename.c_str(), SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, m_CaptureDevice->get_InputSampleFrequency());
+  if(captureWave.error() != SF_ERR_NO_ERROR)
+  {
+    KODI->Log(LOG_ERROR, "Couldn't create capture wave file! libsndfile error: %s", sf_error_number(captureWave.error()));
+    return NULL;
+  }
 
   // wait until StartPlaying is called
   while(m_bStop);
@@ -167,11 +186,38 @@ void *CSignalPlayer::Process(void)
       break;
     }
 
-    playPos += ProcessSamples((uint8_t*)pSamples, MaxSamples);
+    ulong samplesToWrite = 0;
+    if(MaxSamples >= 8182)
+    {
+      samplesToWrite = 8182;
+    }
+    else
+    {
+      samplesToWrite = MaxSamples;
+    }
+
+    playPos += ProcessSamples((uint8_t*)pSamples, samplesToWrite);
     if(playPos >= m_WaveSignal->get_BufferedSamples())
     {
       m_bStop = true;
     }
+
+    ulong capturedSamples = 0;
+    do
+    {
+      capturedSamples = m_CaptureDevice->GetSamples(m_Samples, 2048);
+      if(capturedSamples > 0)
+      {
+        sf_count_t writtenSamples = captureWave.write(m_Samples, capturedSamples);
+        if(writtenSamples < capturedSamples)
+        {
+          AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
+          m_CaptureDevice->Destroy();
+          KODI->Log(LOG_ERROR, "Failed to write to capture wave file!");
+          return NULL;
+        }
+      }
+    }while(capturedSamples > 0);
 
     if(m_bStop)
     {

@@ -31,4 +31,5 @@ private:
   CAddonAEStream *m_pAudioStream;
   CWaveSignal *m_WaveSignal;
   PortAudioSource *m_CaptureDevice;
+  float m_Samples[2048];
 };

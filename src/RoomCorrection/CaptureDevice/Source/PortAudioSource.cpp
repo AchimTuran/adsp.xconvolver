@@ -57,6 +57,10 @@ bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSiz
 {
   vector<string> tokens;
   strTokenizer(DeviceName, DEFAULT_SEPERATOR_STR, tokens);
+  if(tokens[0] != "PortAudio")
+  {
+    return false;
+  }
 
   PaDeviceIndex deviceIdx = paNoDevice;
   if(tokens.size() == 3)
@@ -65,7 +69,7 @@ bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSiz
     IPortAudio::get_AvailableDevices(PaDevices);
     for(unsigned int ii = 0; ii < PaDevices.size() && deviceIdx == paNoDevice; ii++)
     {
-      if(PaDevices[ii].deviceName == tokens[2])
+      if(PaDevices[ii].deviceName == tokens[2] && PaDevices[ii].hostAPI == tokens[1])
       {
         deviceIdx = PaDevices[ii].paDeviceIdx;
       }
@@ -99,7 +103,7 @@ bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSiz
   }
 
   // create buffer
-  m_RingBuffer = new TRingBuffer<float>(get_InputFrameSize()*4);
+  m_RingBuffer = new TRingBuffer<float>(get_InputFrameSize()*100);
   
   KODI->Log(LOG_DEBUG, "Successful configured and created PortAudio Device: %s", m_InputDeviceInfo.deviceName.c_str());
   KODI->Log(LOG_DEBUG, "  frameSize: %i",       IPortAudio::get_InputFrameSize());
@@ -241,12 +245,12 @@ bool PortAudioSource::IsCapturing()
 
 ulong PortAudioSource::GetStoredSamples()
 {
-  return 0;
+  return m_RingBuffer->get_StoredSamples();
 }
 
 ulong PortAudioSource::GetSamples(float *Samples, ulong MaxSamples, ulong Offset)
 {
-  return 0;
+  return m_RingBuffer->read(Samples, MaxSamples);
 }
 
 int PortAudioSource::AudioCallback(const void *inputBuffer, void *outputBuffer,
