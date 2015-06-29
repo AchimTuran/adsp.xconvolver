@@ -1,7 +1,6 @@
 #include <template/include/typedefs.h>
 #include "SignalPlayer.h"
 #include "utils/stdStringUtils.h"
-#include <sndfile/sndfile.hh>
 
 #include <iostream>
 
@@ -13,13 +12,15 @@ CSignalPlayer::CSignalPlayer()
   m_WaveSignal      = NULL;
   m_pAudioStream    = NULL;
   m_bStop           = true;
+  m_pSignalRecorder = NULL;
+}
 
-  asplib::CPaHostAPIVector_t usedHostAPIs;
-  //usedHostAPIs.push_back(paASIO);
-  //usedHostAPIs.push_back(paMME);
-  //usedHostAPIs.push_back(paWASAPI);
-  //usedHostAPIs.push_back(paDirectSound);
-  m_CaptureDevice = new PortAudioSource(usedHostAPIs);
+CSignalPlayer::CSignalPlayer(CSignalRecorder *pSignalRecorder)
+{
+  m_WaveSignal      = NULL;
+  m_pAudioStream    = NULL;
+  m_bStop           = true;
+  m_pSignalRecorder = pSignalRecorder;
 }
 
 CSignalPlayer::~CSignalPlayer()
@@ -27,7 +28,7 @@ CSignalPlayer::~CSignalPlayer()
   Destroy();
 }
 
-bool CSignalPlayer::Create(uint SampleFrequency, string CaptureDevice)
+bool CSignalPlayer::Create(uint SampleFrequency)
 {
   if(IsRunning())
   {
@@ -52,22 +53,7 @@ bool CSignalPlayer::Create(uint SampleFrequency, string CaptureDevice)
     KODI->Log(LOG_ERROR, "Couldn't create CAddonAEStream for measurement signals!");
     return false;
   }
-
-  if(!KODI->DirectoryExists(generateFilePath(g_strUserPath, "measurements").c_str()))
-  {
-    KODI->CreateDirectory(generateFilePath(g_strUserPath, "measurements").c_str());
-  }
-
-  memset(m_Samples, 0, sizeof(float)*2048);
-
-  if(!m_CaptureDevice->Create(SampleFrequency, 2048, CaptureDevice))
-  {
-    KODI->Log(LOG_ERROR, "Couldn't create capture device!");
-    return false;
-  }
-
-  m_CaptureDevice->get_InputFrameSize();
-  
+ 
   if(CThread::IsRunning())
   {
     CThread::StopThread(100);
@@ -132,17 +118,6 @@ bool CSignalPlayer::StopPlaying()
   return true;
 }
 
-unsigned int CSignalPlayer::Get_AvailableDevices(CCaptureDeviceList_t &DeviceList)
-{
-  vector<uint> sampleFrequencies;
-  return Get_AvailableDevices(DeviceList, sampleFrequencies);
-}
-
-unsigned int CSignalPlayer::Get_AvailableDevices(CCaptureDeviceList_t &DeviceList, vector<uint> &SampleFrequencies)
-{
-  DeviceList.clear();
-  return m_CaptureDevice->Get_Devices(DeviceList, SampleFrequencies);
-}
 
 ulong CSignalPlayer::ProcessSamples(uint8_t *Data, unsigned int Frames)
 {
@@ -157,18 +132,9 @@ void *CSignalPlayer::Process(void)
     return NULL;
   }
 
-  string wavFilename = generateFilePath(generateFilePath(g_strUserPath, "measurements"), "capture.wav");
-  SndfileHandle captureWave(wavFilename.c_str(), SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_FLOAT, 1, m_CaptureDevice->get_InputSampleFrequency());
-  if(captureWave.error() != SF_ERR_NO_ERROR)
-  {
-    KODI->Log(LOG_ERROR, "Couldn't create capture wave file! libsndfile error: %s", sf_error_number(captureWave.error()));
-    return NULL;
-  }
-
   // wait until StartPlaying is called
   while(m_bStop);
   KODI->Log(LOG_DEBUG, "Starting speaker measurement process.");
-  m_CaptureDevice->StartCapturing();
 
   // add samples to audio engine until StopPlaying is called
   // or the end of the CFloatSignal is reached
@@ -202,23 +168,6 @@ void *CSignalPlayer::Process(void)
       m_bStop = true;
     }
 
-    ulong capturedSamples = 0;
-    do
-    {
-      capturedSamples = m_CaptureDevice->GetSamples(m_Samples, 2048);
-      if(capturedSamples > 0)
-      {
-        sf_count_t writtenSamples = captureWave.write(m_Samples, capturedSamples);
-        if(writtenSamples < capturedSamples)
-        {
-          AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
-          m_CaptureDevice->Destroy();
-          KODI->Log(LOG_ERROR, "Failed to write to capture wave file!");
-          return NULL;
-        }
-      }
-    }while(capturedSamples > 0);
-
     if(m_bStop)
     {
       break;
@@ -227,10 +176,18 @@ void *CSignalPlayer::Process(void)
     CThread::Sleep((uint32_t)(m_pAudioStream->GetDelay()*1000.0/2));
   }
 
-  //while(m_pAudioStream->GetCacheTotal() > 0);
-  
+  // stop audio stream
+  m_pAudioStream->Drain(true);
+  while(!m_pAudioStream->IsDrained());
+
   AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
-  m_CaptureDevice->Destroy();
+
+  // if an capture device is available stop 
+  if(m_pSignalRecorder)
+  {
+    CThread::Sleep(500);
+    m_pSignalRecorder->StopRecording();
+  }
 
   return NULL;
 }
