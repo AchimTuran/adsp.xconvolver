@@ -22,6 +22,7 @@
 
 #include <template/include/GUIDialogBase.h>
 #include "RoomCorrection/SignalPlayer.h"
+#include "RoomCorrection/SignalRecorder.h"
 
 class CGUIDialogXConvolverSettings : public CGUIDialogBase
 {
@@ -38,6 +39,7 @@ private:
 
   int                   m_FocusedSettingsPage;
   CSignalPlayer         *m_SignalPlayer;
+  CSignalRecorder       *m_SignalRecorder;
   CCaptureDeviceList_t  m_CaptureDevices;
   CAddonGUISpinControl  *m_SpincontrolexCaptureDevice;
   CAddonGUISpinControl  *m_SpincontrolexSampleFrequency;

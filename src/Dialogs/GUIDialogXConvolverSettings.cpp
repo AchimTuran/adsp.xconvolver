@@ -79,7 +79,8 @@ bool CGUIDialogXConvolverSettings::OnInit()
   m_SpincontrolexSampleFrequency = GUI->Control_getSpin(m_window, SPINCONTROLEX_SAMPLE_FREQUENCY);
 
   // create signal player
-  m_SignalPlayer = new CSignalPlayer();
+  m_SignalRecorder  = new CSignalRecorder();
+  m_SignalPlayer    = new CSignalPlayer();
 
   // set capture device names
   vector<uint> sampleFrequencies;
@@ -98,7 +99,7 @@ bool CGUIDialogXConvolverSettings::OnInit()
   sampleFrequencies.push_back(192000);
   sampleFrequencies.push_back(384000);
 
-  m_SignalPlayer->Get_AvailableDevices(m_CaptureDevices, sampleFrequencies);
+  m_SignalRecorder->Get_AvailableDevices(m_CaptureDevices, sampleFrequencies);
   
   for(uint ii = 0; ii < m_CaptureDevices.size(); ii++)
   {
@@ -133,6 +134,13 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         m_SignalPlayer->StopPlaying();
         while(m_SignalPlayer->IsRunning());
       }
+
+      if(m_SignalRecorder->IsRunning())
+      {
+        m_SignalRecorder->StopRecording();
+        while(m_SignalRecorder->IsRunning());
+      }
+
       m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, "measure IR");
       //m_SignalPlayer = new CSignalPlayer();
       string deviceName = "";
@@ -148,7 +156,9 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         }
       }
 
-      m_SignalPlayer->Create(sampleFrequency, deviceName);
+      m_SignalPlayer->Create(sampleFrequency);
+      m_SignalRecorder->Create(sampleFrequency, deviceName);
+      m_SignalRecorder->StartRecording();
       m_SignalPlayer->StartPlaying();
     }
     break;
@@ -158,6 +168,13 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
       {
         m_SignalPlayer->StopPlaying();
         while(m_SignalPlayer->IsRunning());
+        //delete m_SignalPlayer;
+        //m_SignalPlayer = NULL;
+      }
+      if(m_SignalRecorder)
+      {
+        m_SignalRecorder->StopRecording();
+        while(m_SignalRecorder->IsRunning());
         //delete m_SignalPlayer;
         //m_SignalPlayer = NULL;
       }
@@ -242,6 +259,14 @@ void CGUIDialogXConvolverSettings::OnClose()
     while(m_SignalPlayer->IsRunning());
     delete m_SignalPlayer;
     m_SignalPlayer = NULL;
+  }
+
+  if(m_SignalRecorder)
+  {
+    m_SignalRecorder->StopRecording();
+    while(m_SignalRecorder->IsRunning());
+    delete m_SignalRecorder;
+    m_SignalRecorder = NULL;
   }
 
   if(m_SpincontrolexCaptureDevice)
