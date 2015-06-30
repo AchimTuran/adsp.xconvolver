@@ -23,6 +23,7 @@
 #include <asplib/asplib_utils/strings/stdStringUtils.h>
 #include <template/include/typedefs.h>
 #include <string>
+
 using namespace std;
 using namespace ADDON;
 
@@ -69,7 +70,7 @@ bool CGUIDialogXConvolverSettings::OnInit()
 
   // create signal player
   m_SignalRecorder  = new CSignalRecorder();
-  m_SignalPlayer    = new CSignalPlayer();
+  m_SignalPlayer    = new CSignalPlayer(m_SignalRecorder, this);
 
   // set capture device names
   vector<uint> sampleFrequencies;

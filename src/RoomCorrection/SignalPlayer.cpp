@@ -7,20 +7,13 @@
 using namespace ADDON;
 using namespace std;
 
-CSignalPlayer::CSignalPlayer()
-{
-  m_WaveSignal      = NULL;
-  m_pAudioStream    = NULL;
-  m_bStop           = true;
-  m_pSignalRecorder = NULL;
-}
-
-CSignalPlayer::CSignalPlayer(CSignalRecorder *pSignalRecorder)
+CSignalPlayer::CSignalPlayer(CSignalRecorder *pSignalRecorder, CGUIDialogXConvolverSettings *pWindow)
 {
   m_WaveSignal      = NULL;
   m_pAudioStream    = NULL;
   m_bStop           = true;
   m_pSignalRecorder = pSignalRecorder;
+  m_pWindow         = pWindow;
 }
 
 CSignalPlayer::~CSignalPlayer()
@@ -186,7 +179,18 @@ void *CSignalPlayer::Process(void)
   if(m_pSignalRecorder)
   {
     CThread::Sleep(500);
-    m_pSignalRecorder->StopRecording();
+    if(!m_pSignalRecorder->StopRecording())
+    {
+      KODI->Log(ADDON::LOG_ERROR, "Unable to stop signal recorder!");
+    }
+  }
+
+  if(m_pWindow)
+  {
+    if(!m_pWindow->OnClick(BUTTON_STOP_CHIRP_SIGNAL))
+    {
+      KODI->Log(ADDON::LOG_ERROR, "Unable to stop measurement via button id: %i!", BUTTON_STOP_CHIRP_SIGNAL);
+    }
   }
 
   return NULL;

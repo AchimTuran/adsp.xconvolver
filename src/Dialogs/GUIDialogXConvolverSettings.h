@@ -36,6 +36,7 @@
 
 class CGUIDialogXConvolverSettings : public CGUIDialogBase
 {
+  friend class CSignalPlayer;
 public:
   CGUIDialogXConvolverSettings(int FocusedSettingsPage=-1);
   ~CGUIDialogXConvolverSettings();
