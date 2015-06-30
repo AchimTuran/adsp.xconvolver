@@ -26,17 +26,6 @@
 using namespace std;
 using namespace ADDON;
 
-#define CONTROL_BUTTON_SELECT_FIR_FITLER_DIRECTORY  9003
-#define BUTTON_START_CHIRP_SIGNAL                   3001
-#define BUTTON_STOP_CHIRP_SIGNAL                    3002
-#define LABEL_CURRENT_AUDIO_CHANNEL                 3003
-#define SPINCONTROLEX_SAMPLE_FREQUENCY              3004
-#define SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES     3005
-#define LIST_SETTINGS_SELECTION                     900
-#define GROUP_SETTINGS_SELECTION                    9000
-#define SETTINGS_SELECTION_ELEMENT_ROOM_CORRECTION  9993
-
-
 CGUIDialogXConvolverSettings::CGUIDialogXConvolverSettings(int FocusedSettingsPage) :
   CGUIDialogBase("DialogXConvolverSettings.xml", false, true)
 {
