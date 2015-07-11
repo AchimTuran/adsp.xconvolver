@@ -1,6 +1,7 @@
 #include <template/include/typedefs.h>
 #include "SignalPlayer.h"
 #include "utils/stdStringUtils.h"
+#include "kodi/AudioEngine/AEChannelInfo.h"
 
 #include <iostream>
 
@@ -34,13 +35,18 @@ bool CSignalPlayer::Create(uint SampleFrequency)
     delete m_WaveSignal;
     m_WaveSignal = NULL;
   }
-  m_WaveSignal = m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_SEPARATOR_SYMBOL + string("measurement.signals") + PATH_SEPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
+  m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_SEPARATOR_SYMBOL + string("measurement.signals") + PATH_SEPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
 
   if(m_pAudioStream)
   {
-    AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
+    AUDIOENGINE->FreeStream(&m_pAudioStream);
   }
-  m_pAudioStream = AUDIOENGINE->AudioEngine_MakeStream(AE_FMT_FLOAT, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), AE_CH_LAYOUT_1_0, AESTREAM_AUTOSTART | AESTREAM_BYPASS_ADSP);
+
+  AudioEngineFormat sinkFormat;
+  AUDIOENGINE->GetCurrentSinkFormat(sinkFormat);
+
+  CAEChannelInfo AEChannelInfo(sinkFormat.m_channels);
+  m_pAudioStream = AUDIOENGINE->MakeStream(AE_FMT_FLOAT, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), AEChannelInfo, AESTREAM_AUTOSTART | AESTREAM_BYPASS_ADSP);
   if(!m_pAudioStream)
   {
     KODI->Log(LOG_ERROR, "Couldn't create CAddonAEStream for measurement signals!");
@@ -69,7 +75,7 @@ bool CSignalPlayer::Destroy()
 
   if(m_pAudioStream)
   {
-    AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
+    AUDIOENGINE->FreeStream(&m_pAudioStream);
     m_pAudioStream = NULL;
   }
 
@@ -156,7 +162,7 @@ void *CSignalPlayer::Process(void)
     }
 
     playPos += ProcessSamples((uint8_t*)pSamples, samplesToWrite);
-    if(playPos >= m_WaveSignal->get_BufferedSamples())
+    if(playPos >= m_WaveSignal->get_BufferedSamples() || playPos >= maxPlayPos)
     {
       m_bStop = true;
     }
@@ -173,7 +179,7 @@ void *CSignalPlayer::Process(void)
   m_pAudioStream->Drain(true);
   while(!m_pAudioStream->IsDrained());
 
-  AUDIOENGINE->AudioEngine_FreeStream(&m_pAudioStream);
+  AUDIOENGINE->FreeStream(&m_pAudioStream);
 
   // if an capture device is available stop 
   if(m_pSignalRecorder)

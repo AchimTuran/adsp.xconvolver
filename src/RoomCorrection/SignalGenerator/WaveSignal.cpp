@@ -51,7 +51,7 @@ CWaveSignal::CWaveSignal(string File)
     // ToDo: throw error
   }
  
-  if(!m_Signal.set_Samples(waveFile.samples, waveFile.maxSamples, waveFile.sampleFrequency))
+  if(!m_Signal.set_Samples(waveFile.samples, waveFile.maxSamples, 0))
   {
     // ToDo: throw error
   }

@@ -169,7 +169,7 @@ public:
       samplesCopy = get_BufferedSamples() - Offset;
     }
 
-    if(!samplesCopy)
+    if(samplesCopy <= 0)
     {
       return 0;
     }
