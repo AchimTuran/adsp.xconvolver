@@ -134,7 +134,7 @@ AE_DSP_ERROR CADDONOptional::CallMenuHook(const AE_DSP_MENUHOOK& Menuhook, const
 bool CADDONOptional::OptionalInit()
 {
   // create filter manager
-  LXC_ERROR_CODE err = LXC_Core_init(GetAddonPath().c_str());
+  LXC_ERROR_CODE err = LXC_Core_init(GetUserPath().c_str());
   if (err != LXC_NO_ERR)
   {
     // ToDo: show some error message
