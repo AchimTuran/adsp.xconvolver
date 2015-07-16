@@ -48,6 +48,8 @@ private:
   virtual bool OnAction(int actionId);
   virtual void OnClose();
 
+  bool SetMeasurementStatus(std::string &Message);
+
   int                   m_FocusedSettingsPage;
   CSignalPlayer         *m_SignalPlayer;
   CSignalRecorder       *m_SignalRecorder;

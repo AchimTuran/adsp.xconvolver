@@ -69,7 +69,7 @@ bool CGUIDialogXConvolverSettings::OnInit()
   m_SpincontrolexSampleFrequency = GUI->Control_getSpin(m_window, SPINCONTROLEX_SAMPLE_FREQUENCY);
 
   // create signal player
-  m_SignalRecorder  = new CSignalRecorder();
+  m_SignalRecorder  = new CSignalRecorder("capture_");
   m_SignalPlayer    = new CSignalPlayer(m_SignalRecorder, this);
 
   // set capture device names
@@ -131,8 +131,7 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         while(m_SignalRecorder->IsRunning());
       }
 
-      m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, "measure IR");
-      //m_SignalPlayer = new CSignalPlayer();
+      SetMeasurementStatus(string("started measurement process"));
       string deviceName = "";
       int deviceIdx = m_SpincontrolexCaptureDevice->GetValue();
       uint sampleFrequency = 44100;
@@ -145,10 +144,10 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
           sampleFrequency = m_CaptureDevices[deviceIdx].sampleFrequencies[sampleFrequencyIdx];
         }
       }
-
+      
+      m_SignalRecorder->Create(sampleFrequency, 2, deviceName);
       m_SignalPlayer->Create(sampleFrequency);
-      m_SignalRecorder->Create(sampleFrequency, deviceName);
-      m_SignalRecorder->StartRecording();
+      
       m_SignalPlayer->StartPlaying();
     }
     break;
@@ -158,17 +157,8 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
       {
         m_SignalPlayer->StopPlaying();
         while(m_SignalPlayer->IsRunning());
-        //delete m_SignalPlayer;
-        //m_SignalPlayer = NULL;
       }
-      if(m_SignalRecorder)
-      {
-        m_SignalRecorder->StopRecording();
-        while(m_SignalRecorder->IsRunning());
-        //delete m_SignalPlayer;
-        //m_SignalPlayer = NULL;
-      }
-      m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, "stopped");
+      SetMeasurementStatus(string("Measuring stopped"));
     break;
 
     case SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES:
@@ -270,4 +260,15 @@ void CGUIDialogXConvolverSettings::OnClose()
     GUI->Control_releaseSpin(m_SpincontrolexSampleFrequency);
     m_SpincontrolexSampleFrequency = NULL;
   }
+}
+
+bool CGUIDialogXConvolverSettings::SetMeasurementStatus(std::string &Message)
+{
+  if(!m_window)
+  {
+    return false;
+  }
+  
+  m_window->SetControlLabel(LABEL_CURRENT_AUDIO_CHANNEL, Message.c_str());
+  return true;
 }
