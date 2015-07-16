@@ -10,58 +10,69 @@ using namespace std;
 
 CSignalPlayer::CSignalPlayer(CSignalRecorder *pSignalRecorder, CGUIDialogXConvolverSettings *pWindow)
 {
-  m_WaveSignal      = NULL;
-  m_pAudioStream    = NULL;
-  m_bStop           = true;
-  m_pSignalRecorder = pSignalRecorder;
-  m_pWindow         = pWindow;
+  m_WaveSignal          = NULL;
+  m_pAudioStream        = NULL;
+  m_bStop               = true;
+  m_pSignalRecorder     = pSignalRecorder;
+  m_pWindow             = pWindow;
+  m_AudioChannelBuffer  = NULL;
+
+  m_AEChannelInfo.Reset();
 }
 
 CSignalPlayer::~CSignalPlayer()
 {
   Destroy();
+
+  m_AEChannelInfo.Reset();
 }
 
 bool CSignalPlayer::Create(uint SampleFrequency)
 {
-  if(IsRunning())
-  {
-    StopPlaying();
-    while(IsRunning());
-  }
-  
-  if(m_WaveSignal)
-  {
-    delete m_WaveSignal;
-    m_WaveSignal = NULL;
-  }
+  Destroy();
   m_WaveSignal = new CWaveSignal(g_strAddonPath + PATH_SEPARATOR_SYMBOL + string("measurement.signals") + PATH_SEPARATOR_SYMBOL + string("ess_10_20000_fs44100_15s.wav"));
 
-  if(m_pAudioStream)
+  AudioEngineFormat sinkFormat;
+  if (!AUDIOENGINE->GetCurrentSinkFormat(sinkFormat))
   {
-    AUDIOENGINE->FreeStream(&m_pAudioStream);
+	  KODI->Log(LOG_ERROR, "Couldn't get sink format! Aborting measurement.");
+	  return false;
   }
 
-  AudioEngineFormat sinkFormat;
-  AUDIOENGINE->GetCurrentSinkFormat(sinkFormat);
+  m_AEChannelInfo = sinkFormat.m_channels;
+  if (m_AEChannelInfo.Count() <= 0)
+  {
+	  KODI->Log(LOG_ERROR, "No available sink speaker channels! Aborting measurement.");
+	  return false;
+  }
 
-  CAEChannelInfo AEChannelInfo(sinkFormat.m_channels);
-  m_pAudioStream = AUDIOENGINE->MakeStream(AE_FMT_FLOAT, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), AEChannelInfo, AESTREAM_AUTOSTART | AESTREAM_BYPASS_ADSP);
+  m_PlaneAudioArray = new uint8_t*[m_AEChannelInfo.Count()];
+  m_AudioChannelBuffer = new CFloatFrameBuffer(PROCESSING_FRAME_LENGTH, m_AEChannelInfo.Count());
+
+  for(uint32_t ch = 0; ch < m_AEChannelInfo.Count(); ch++)
+  {
+    uint8_t *p = (uint8_t*)m_AudioChannelBuffer->get_Frame(ch);
+    if(!p)
+    {
+      return false;
+    }
+
+    m_PlaneAudioArray[ch] = p;
+  }
+
+  m_pAudioStream = AUDIOENGINE->MakeStream(AE_FMT_FLOATP, m_WaveSignal->get_SampleFrequency(), m_WaveSignal->get_SampleFrequency(), m_AEChannelInfo, AESTREAM_AUTOSTART | AESTREAM_BYPASS_ADSP);
   if(!m_pAudioStream)
   {
-    KODI->Log(LOG_ERROR, "Couldn't create CAddonAEStream for measurement signals!");
+    KODI->Log(LOG_ERROR, "Couldn't create CAddonAEStream for measurement signals! Aborting measurement.");
     return false;
   }
+
+  string channelNames = m_AEChannelInfo;
+  KODI->Log(LOG_DEBUG, "Opening CAddonAEStrem with %i speaker channels (%s)", m_AEChannelInfo.Count(), channelNames.c_str());
  
-  if(CThread::IsRunning())
-  {
-    CThread::StopThread(100);
-    m_bStop = true;
-    while(!CThread::IsStopped());
-  }
   if(!CThread::CreateThread())
   {
-    KODI->Log(LOG_ERROR, "Couldn't create playing thread!");
+    KODI->Log(LOG_ERROR, "Couldn't create playing thread! Aborting measurement.");
     return false;
   }
 
@@ -70,19 +81,33 @@ bool CSignalPlayer::Create(uint SampleFrequency)
 
 bool CSignalPlayer::Destroy()
 {
-  // wait 500ms to stop the playing thread
-  CThread::StopThread(-1);
+  if(CThread::IsRunning())
+  {
+   // imidiatly stop thread
+    CThread::StopThread(-1);
+  }
 
   if(m_pAudioStream)
   {
     AUDIOENGINE->FreeStream(&m_pAudioStream);
-    m_pAudioStream = NULL;
   }
 
   if(m_WaveSignal)
   {
     delete m_WaveSignal;
     m_WaveSignal = NULL;
+  }
+
+  if(m_PlaneAudioArray)
+  {
+    delete[] m_PlaneAudioArray;
+    m_PlaneAudioArray = NULL;
+  }
+
+  if(m_AudioChannelBuffer)
+  {
+    delete m_AudioChannelBuffer;
+    m_AudioChannelBuffer = NULL;
   }
 
   return true;
@@ -107,7 +132,7 @@ bool CSignalPlayer::StopPlaying()
   if(!m_bStop)
   {
     m_bStop = true;
-    bool ret = CThread::StopThread(100);
+    CThread::StopThread(-1);
   }
   else
   {
@@ -118,17 +143,27 @@ bool CSignalPlayer::StopPlaying()
 }
 
 
-ulong CSignalPlayer::ProcessSamples(uint8_t *Data, unsigned int Frames)
+ulong CSignalPlayer::ProcessSamples(uint8_t **Data, unsigned int Frames)
 {
-  return (ulong)m_pAudioStream->AddData((uint8_t* const*)&Data, 0, Frames);
+  return (ulong)m_pAudioStream->AddData((uint8_t* const*)Data, 0, Frames);
 }
 
 void *CSignalPlayer::Process(void)
 {
   if(!m_pAudioStream)
   {
-    KODI->Log(LOG_ERROR, "%s: called with no audio stream!", __func__);
+    KODI->Log(LOG_ERROR, "%s: started without a valid audio stream!", __func__);
     return NULL;
+  }
+
+  if(!m_pSignalRecorder)
+  {
+    KODI->Log(LOG_NOTICE, "%s: started without a valid capture device. Measurement will not be saved to a file.", __func__);
+  }
+
+  if(!m_pWindow)
+  {
+    KODI->Log(LOG_NOTICE, "%s: started without a valid window pointer. Measurement status will is not display on the UI.", __func__);
   }
 
   // wait until StartPlaying is called
@@ -141,38 +176,73 @@ void *CSignalPlayer::Process(void)
   unsigned long playPos = 0;
   const unsigned long maxPlayPos = m_WaveSignal->get_BufferedSamples();
   float *pSamples = NULL;
-  while(!m_bStop)
+  for(uint32_t ch = 0; ch < m_AEChannelInfo.Count() && !m_bStop; ch++)
   {
-    pSamples = NULL;
-    ulong MaxSamples = m_WaveSignal->get_Data(playPos, pSamples);
-    if(!MaxSamples || !pSamples)
+    m_AudioChannelBuffer->ResetBuffer();
+    playPos = 0;
+
+    if(m_pWindow)
     {
-      m_bStop = true;
-      break;
+      string str = "Measuring ";
+      str += CAEChannelInfo::GetChName(m_AEChannelInfo[ch]);
+      str += "...";
+      m_pWindow->SetMeasurementStatus(str);
     }
 
-    ulong samplesToWrite = 0;
-    if(MaxSamples >= 8182)
+    if(m_pSignalRecorder)
     {
-      samplesToWrite = 8182;
-    }
-    else
-    {
-      samplesToWrite = MaxSamples;
+      if(!m_pSignalRecorder->StartRecording(CAEChannelInfo::GetChName(m_AEChannelInfo[ch])))
+      {
+        return NULL;
+      }
+
+      // wait until signal recorder is capturing
+      while(m_pSignalRecorder->Get_CurrentState() != CSignalRecorder::STATE_CAPTURING);
     }
 
-    playPos += ProcessSamples((uint8_t*)pSamples, samplesToWrite);
-    if(playPos >= m_WaveSignal->get_BufferedSamples() || playPos >= maxPlayPos)
+    // now measure speaker response
+    while(playPos < maxPlayPos && !m_bStop)
     {
-      m_bStop = true;
+      pSamples = NULL;
+      ulong MaxSamples = m_WaveSignal->get_Data(playPos, pSamples);
+      if(!MaxSamples || !pSamples)
+      {
+        m_bStop = true;
+        break;
+      }
+
+      ulong samplesToWrite = 0;
+      if(MaxSamples >= PROCESSING_FRAME_LENGTH)
+      {
+        samplesToWrite = PROCESSING_FRAME_LENGTH;
+      }
+      else
+      {
+        samplesToWrite = MaxSamples;
+      }
+
+      memcpy(m_AudioChannelBuffer->get_Frame(ch), pSamples, sizeof(float)*samplesToWrite);
+      ulong samplesWritten = ProcessSamples(m_PlaneAudioArray, samplesToWrite);
+      
+      if(samplesWritten > 0)
+      {
+        playPos += samplesWritten;
+        if(m_pAudioStream->GetDelay() > 0.0)
+        {
+          CThread::Sleep((uint32_t)(m_pAudioStream->GetDelay()*1000.0 / 2));
+        }
+      }
     }
 
-    if(m_bStop)
+    // wait until all samples are played before the capture process is stoppped
+    CThread::Sleep(m_pAudioStream->GetDelay()*1000);
+    if(m_pSignalRecorder && !m_pSignalRecorder->StopRecording())
     {
-      break;
+      return NULL;
     }
 
-    CThread::Sleep((uint32_t)(m_pAudioStream->GetDelay()*1000.0/2));
+    // wait 500ms before the next speaker channel will be measured
+    CThread::Sleep(500);
   }
 
   // stop audio stream
@@ -185,7 +255,7 @@ void *CSignalPlayer::Process(void)
   if(m_pSignalRecorder)
   {
     CThread::Sleep(500);
-    if(!m_pSignalRecorder->StopRecording())
+    if(!m_pSignalRecorder->FinishRecording())
     {
       KODI->Log(ADDON::LOG_ERROR, "Unable to stop signal recorder!");
     }
@@ -193,10 +263,7 @@ void *CSignalPlayer::Process(void)
 
   if(m_pWindow)
   {
-    if(!m_pWindow->OnClick(BUTTON_STOP_CHIRP_SIGNAL))
-    {
-      KODI->Log(ADDON::LOG_ERROR, "Unable to stop measurement via button id: %i!", BUTTON_STOP_CHIRP_SIGNAL);
-    }
+    m_pWindow->SetMeasurementStatus(string("Finished measurement"));
   }
 
   return NULL;
