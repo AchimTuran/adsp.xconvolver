@@ -26,7 +26,7 @@
 class ICaptureSource
 {
 public:
-  virtual bool Create(uint SampleFrequency, uint FrameSize=0, std::string DeviceName="") = 0;
+  virtual bool Create(uint SampleFrequency, uint FrameSize=0, uint MaxCaptureChannels=1, std::string DeviceName="") = 0;
   virtual void Destroy() = 0;
 
   virtual bool StartCapturing() = 0;

@@ -35,7 +35,7 @@ public:
   PortAudioSource(asplib::CPaHostAPIVector_t &UsedHostAPIs);
   ~PortAudioSource();
 
-  virtual bool Create(unsigned int SampleFrequency, unsigned int FrameSize, std::string DeviceName="");
+  virtual bool Create(unsigned int SampleFrequency, unsigned int FrameSize, uint32_t MaxCaptureChannels, std::string DeviceName = "");
   int  Get_Devices(CCaptureDeviceList_t &DeviceList);
   virtual int  Get_Devices(CCaptureDeviceList_t &DeviceList, std::vector<uint> &SampleFrequencies);
   virtual void Destroy();
@@ -65,4 +65,5 @@ private:
   PLATFORM::CMutex m_Mutex;
   volatile DeviceStates_t m_State;
   asplib::TRingBuffer<float> *m_RingBuffer;
+  uint32_t m_MaxCaptureChannels;
 };

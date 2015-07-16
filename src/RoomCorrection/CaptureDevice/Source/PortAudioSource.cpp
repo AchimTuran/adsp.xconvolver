@@ -53,13 +53,23 @@ PortAudioSource::~PortAudioSource()
   }
 }
 
-bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSize, string DeviceName)
+bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSize, unsigned int MaxCaptureChannels, string DeviceName)
 {
   vector<string> tokens;
   strTokenizer(DeviceName, DEFAULT_SEPERATOR_STR, tokens);
   if(tokens[0] != "PortAudio")
   {
     return false;
+  }
+
+  if(MaxCaptureChannels <= 0)
+  {
+    KODI->Log(LOG_NOTICE, "Capture channels == 0. Setting to default amount ==1.");
+    m_MaxCaptureChannels = 1;
+  }
+  else
+  {
+    m_MaxCaptureChannels = MaxCaptureChannels;
   }
 
   PaDeviceIndex deviceIdx = paNoDevice;
@@ -87,7 +97,7 @@ bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSiz
   {
     frameSize = FrameSize;
   }
-  PaError paErr = IPortAudio::configure_Device(2, 0, SampleFrequency, deviceIdx, -1, paFloat32|paNonInterleaved, frameSize);
+  PaError paErr = IPortAudio::configure_Device(m_MaxCaptureChannels, 0, SampleFrequency, deviceIdx, -1, paFloat32/*|paNonInterleaved*/, frameSize);
   if(paErr != paNoError)
   {
     KODI->Log(LOG_ERROR, "Couldn't configure PortAudio device PortAudio Error: %s", get_PortAudioErrStr(paErr).c_str());
@@ -103,7 +113,7 @@ bool PortAudioSource::Create(unsigned int SampleFrequency, unsigned int FrameSiz
   }
 
   // create buffer
-  m_RingBuffer = new TRingBuffer<float>(get_InputFrameSize()*100);
+  m_RingBuffer = new TRingBuffer<float>(get_InputFrameSize()*get_InputChannelAmount()*100);
   
   KODI->Log(LOG_DEBUG, "Successful configured and created PortAudio Device: %s", m_InputDeviceInfo.deviceName.c_str());
   KODI->Log(LOG_DEBUG, "  frameSize: %i",       IPortAudio::get_InputFrameSize());
@@ -261,15 +271,15 @@ int PortAudioSource::AudioCallback(const void *inputBuffer, void *outputBuffer,
 {
   if(m_State == DEVICE_CAPTURING)
   {
-    float **captureInput = (float**)inputBuffer;
-    if(m_RingBuffer->get_FreeSamples() < framesPerBuffer)
+    //float **captureInput = (float**)inputBuffer;
+    if(m_RingBuffer->get_FreeSamples() < framesPerBuffer*m_MaxCaptureChannels)
     {
       KODI->Log(LOG_ERROR, "Capture device buffer overflow! Aborting capturing.");
       m_State = DEVICE_STOPPED;
       return paAbort;
     }
     
-    m_RingBuffer->write(captureInput[0], framesPerBuffer);
+    m_RingBuffer->write((float*)inputBuffer, framesPerBuffer*m_MaxCaptureChannels);
   }
   else if(m_State == DEVICE_STOPPED)
   {
