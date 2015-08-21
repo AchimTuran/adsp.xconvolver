@@ -163,6 +163,8 @@ int PortAudioSource::Get_Devices(CCaptureDeviceList_t &DeviceList, vector<uint> 
         device.sampleFrequencies.push_back((uint)PaDevices[ii].deviceInfo->defaultSampleRate);
       }
 
+      device.maxChannels = PaDevices[ii].deviceInfo->maxInputChannels;
+      device.defaultSampleFrequency = PaDevices[ii].deviceInfo->defaultSampleRate;
       DeviceList.push_back(device);
     }
   }
