@@ -48,6 +48,15 @@ CGUIDialogXConvolverSettings::~CGUIDialogXConvolverSettings()
 
 bool CGUIDialogXConvolverSettings::OnInit()
 {
+  //{
+  //  string script = g_strAddonPath + string("\\python.scripts\\") + string("HelloWorld.py");
+  //  std::vector<std::string> arguments;
+  //  arguments.push_back("plugin://adsp.xconvolver/python.scripts/");
+  //  arguments.push_back("1");
+  //  arguments.push_back("");
+  //  INTERFACES->ExecuteScriptAsync(script, "adsp.xconvolver", arguments);
+  //}
+
   if (m_FocusedSettingsPage >= 0)
   { // ToDo: Set Focus control
     m_window->SetFocusId(LIST_SETTINGS_SELECTION);
@@ -159,6 +168,16 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         while(m_SignalPlayer->IsRunning());
       }
       SetMeasurementStatus(string("Measuring stopped"));
+
+      //{
+      //  string script = g_strAddonPath + string("\\python.scripts\\") + string("HelloWorld.py");
+      //  std::vector<std::string> arguments;
+      //  arguments.push_back("plugin://adsp.xconvolver/python.scripts/");
+      //  arguments.push_back("1");
+      //  arguments.push_back("");
+      //  INTERFACES->ExecuteScriptAsync(script, "adsp.xconvolver", arguments);
+      //}
+
     break;
 
     case SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES:

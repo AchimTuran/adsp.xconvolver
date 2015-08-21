@@ -146,6 +146,15 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_strUserPath   = adspprops->strUserPath;
     g_strAddonPath  = adspprops->strAddonPath;
 
+    //string script = g_strAddonPath + string("\\python.scripts\\") + string("HelloWorld.py");
+    string script = string("special://home/addons/plugin.program.room.correction.regularization/addon.py");
+    std::vector<std::string> arguments;
+    //arguments.push_back("plugin://adsp.xconvolver/python.scripts/");
+    arguments.push_back("special://home/addons/plugin.program.room.correction.regularization/");
+    arguments.push_back("1");
+    arguments.push_back("");
+    INTERFACES->ExecuteScriptAsync(script, "plugin.program.room.correction.regularization", arguments);
+
     ADDON_ReadSettings();
 
     if(!g_AddonHandler.Init())
