@@ -30,6 +30,7 @@
 #define LABEL_CURRENT_AUDIO_CHANNEL                 3003
 #define SPINCONTROLEX_SAMPLE_FREQUENCY              3004
 #define SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES     3005
+#define SPINCONTROLEX_CHANNELS                      3006
 #define LIST_SETTINGS_SELECTION                     900
 #define GROUP_SETTINGS_SELECTION                    9000
 #define SETTINGS_SELECTION_ELEMENT_ROOM_CORRECTION  9993
@@ -56,4 +57,5 @@ private:
   CCaptureDeviceList_t  m_CaptureDevices;
   CAddonGUISpinControl  *m_SpincontrolexCaptureDevice;
   CAddonGUISpinControl  *m_SpincontrolexSampleFrequency;
+  CAddonGUISpinControl  *m_SpincontrolexChannels;
 };

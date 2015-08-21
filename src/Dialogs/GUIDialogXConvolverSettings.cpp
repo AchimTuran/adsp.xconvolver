@@ -70,12 +70,15 @@ bool CGUIDialogXConvolverSettings::OnInit()
     }
   }
 
-  m_SpincontrolexCaptureDevice = GUI->Control_getSpin(m_window, SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES);
-  if(!m_SpincontrolexCaptureDevice)
+  m_SpincontrolexCaptureDevice    = GUI->Control_getSpin(m_window, SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES);
+  m_SpincontrolexSampleFrequency  = GUI->Control_getSpin(m_window, SPINCONTROLEX_SAMPLE_FREQUENCY);
+  m_SpincontrolexChannels         = GUI->Control_getSpin(m_window, SPINCONTROLEX_CHANNELS);
+  if(!m_SpincontrolexCaptureDevice || !m_SpincontrolexSampleFrequency || !m_SpincontrolexChannels)
   {
-    KODI->Log(LOG_ERROR, "Couldn't find GUI \"m_SpincontrolexCaptureDevice\" with control ID=%i", SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES);
+    KODI->Log(LOG_ERROR,  "Couldn't find a necessary control ID! Closing dialog. Please check your skin file. For ID={%i, %i, %i}.",
+                          SPINCONTROLEX_AVAILABLE_CAPTURE_DEVICES, SPINCONTROLEX_SAMPLE_FREQUENCY, SPINCONTROLEX_CHANNELS);
+    return false;
   }
-  m_SpincontrolexSampleFrequency = GUI->Control_getSpin(m_window, SPINCONTROLEX_SAMPLE_FREQUENCY);
 
   // create signal player
   m_SignalRecorder  = new CSignalRecorder("capture_");
@@ -112,11 +115,22 @@ bool CGUIDialogXConvolverSettings::OnInit()
   }
   else
   {
-    m_SpincontrolexCaptureDevice->SetValue(0);
+    //m_SpincontrolexCaptureDevice->SetValue(0);
+    m_SpincontrolexSampleFrequency->AddLabel(toString<uint>(m_CaptureDevices[0].defaultSampleFrequency).c_str(), 0);
     for(uint ii = 0; ii < m_CaptureDevices[0].sampleFrequencies.size(); ii++)
     {
-      m_SpincontrolexSampleFrequency->AddLabel(toString<uint>(m_CaptureDevices[0].sampleFrequencies[ii]).c_str(), ii);
+      m_SpincontrolexSampleFrequency->AddLabel(toString<uint>(m_CaptureDevices[0].sampleFrequencies[ii]).c_str(), ii +1);
     }
+
+    m_SpincontrolexChannels->AddLabel(toString<uint>(1).c_str(), 0);
+    if(m_CaptureDevices[0].maxChannels > 1)
+    {
+      for(uint ch = 2; ch <= m_CaptureDevices[0].maxChannels; ch++)
+      {
+        m_SpincontrolexChannels->AddLabel(toString<uint>(ch).c_str(), ch -1);
+      }
+    }
+    m_SpincontrolexChannels->SetValue(0);
   }
 
   return true;
@@ -152,9 +166,14 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         {
           sampleFrequency = m_CaptureDevices[deviceIdx].sampleFrequencies[sampleFrequencyIdx];
         }
+        else
+        {
+          sampleFrequency = m_CaptureDevices[deviceIdx].defaultSampleFrequency;
+        }
       }
       
-      m_SignalRecorder->Create(sampleFrequency, 2, deviceName);
+      uint captureChannels = m_SpincontrolexChannels->GetValue() + 1;
+      m_SignalRecorder->Create(sampleFrequency, captureChannels, deviceName);
       m_SignalPlayer->Create(sampleFrequency);
       
       m_SignalPlayer->StartPlaying();
@@ -195,11 +214,24 @@ bool CGUIDialogXConvolverSettings::OnClick(int controlId)
         {
           m_SpincontrolexSampleFrequency->SetValue(0);
         }
+
+        m_SpincontrolexChannels->Clear();
+        m_SpincontrolexChannels->AddLabel(toString<uint>(1).c_str(), 0);
+        if(m_CaptureDevices[deviceIdx].maxChannels > 1)
+        {
+          for(uint ch = 2; ch <= m_CaptureDevices[deviceIdx].maxChannels; ch++)
+          {
+            m_SpincontrolexChannels->AddLabel(toString<uint>(ch).c_str(), ch - 1);
+          }
+        }
+        m_SpincontrolexChannels->SetValue(0);
       }
     }
     break;
 
     case LABEL_CURRENT_AUDIO_CHANNEL:
+    {
+    }
     break;
 
     default:
