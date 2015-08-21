@@ -7,7 +7,9 @@
   <requires>
     <c-pluff version="0.1"/>
     <import addon="kodi.adsp" version="0.1.8"/>
-	<import addon="kodi.audioengine" version="0.0.1"/>
+    <import addon="kodi.audioengine" version="0.0.1"/>
+    <import addon="kodi.interfaces" version="0.0.1"/>
+    <import addon="xbmc.python" version="2.14.0"/>
   </requires>
   <extension
     point="kodi.adsp"
@@ -16,10 +18,18 @@
     library_wingl="adsp.xconvolver.dll"
     library_windx="adsp.xconvolver.dll"
     library_android="libadsp.xconvolver.so" />
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>executable</provides>
+  </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en">XConvolver AudioDSP Addon</summary>
     <description lang="en">ToDo some great description. :-b</description>
-    <disclaimer lang="en">Note: it's only a place holder! Don't install it.</disclaimer>
+    <disclaimer lang="en">Note: This addon is currently under development!</disclaimer>
     <platform>all</platform>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 3</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
   </extension>
 </addon>
