@@ -137,6 +137,21 @@ bool CSignalRecorder::FinishRecording()
 unsigned int CSignalRecorder::Get_AvailableDevices(CCaptureDeviceList_t &DeviceList)
 {
   vector<uint> sampleFrequencies;
+  // adding standard sample frequencies
+  sampleFrequencies.push_back(8000);
+  sampleFrequencies.push_back(11025);
+  sampleFrequencies.push_back(16000);
+  sampleFrequencies.push_back(22050);
+  sampleFrequencies.push_back(32000);
+  sampleFrequencies.push_back(44100);
+  sampleFrequencies.push_back(48000);
+  sampleFrequencies.push_back(64000);
+  sampleFrequencies.push_back(88200);
+  sampleFrequencies.push_back(96000);
+  sampleFrequencies.push_back(176400);
+  sampleFrequencies.push_back(192000);
+  sampleFrequencies.push_back(384000);
+
   return Get_AvailableDevices(DeviceList, sampleFrequencies);
 }
 
