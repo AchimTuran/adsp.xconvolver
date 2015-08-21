@@ -60,6 +60,7 @@ CHelper_libXBMC_addon       *KODI         = NULL;
 CHelper_libKODI_adsp        *ADSP         = NULL;
 CHelper_libKODI_guilib      *GUI          = NULL;
 CHelper_libKODI_audioengine *AUDIOENGINE  = NULL;
+CHelper_libKODI_interfaces  *INTERFACES   = NULL;
 
 /*
  *	ADSP Addon handling class
@@ -128,6 +129,17 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
       return ADDON_STATUS_PERMANENT_FAILURE;
     }
 
+    INTERFACES = new CHelper_libKODI_interfaces;
+    if(!INTERFACES->RegisterMe(hdl))
+    {
+      SAFE_DELETE(ADSP);
+      SAFE_DELETE(GUI);
+      SAFE_DELETE(KODI);
+      SAFE_DELETE(AUDIOENGINE);
+      SAFE_DELETE(INTERFACES);
+      return ADDON_STATUS_PERMANENT_FAILURE;
+    }
+
     KODI->Log(LOG_DEBUG, "%s - Creating Audio DSP add-on template", __FUNCTION__);
 
     m_CurStatus     = ADDON_STATUS_UNKNOWN;
@@ -158,6 +170,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     SAFE_DELETE(GUI);
     SAFE_DELETE(KODI);
     SAFE_DELETE(AUDIOENGINE);
+    SAFE_DELETE(INTERFACES);
   }
 
   return ADDON_STATUS_PERMANENT_FAILURE;
@@ -181,6 +194,7 @@ void ADDON_Destroy()
     SAFE_DELETE(GUI);
     SAFE_DELETE(KODI);
     SAFE_DELETE(AUDIOENGINE);
+    SAFE_DELETE(INTERFACES);
 
     m_CurStatus = ADDON_STATUS_UNKNOWN;
   }
