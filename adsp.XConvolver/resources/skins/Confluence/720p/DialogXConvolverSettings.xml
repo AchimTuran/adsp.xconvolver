@@ -628,7 +628,7 @@
 						<height>40</height>
 						<width>750</width>
 						<onup>3004</onup>
-						<ondown>3005</ondown>
+						<ondown>3006</ondown>
 						<onleft>9000</onleft>
 						<onright>3005</onright>
 						<font>font13</font>
@@ -638,6 +638,24 @@
 						<reverse>yes</reverse>
 						<aligny>center</aligny>
 						<label>Select prefered capture device</label>
+					</control>
+					<control type="spincontrolex" id="3006">
+						<description>list of available channels for capturing</description>
+						<left>0</left>
+						<top>180</top>
+						<height>40</height>
+						<width>750</width>
+						<onup>3005</onup>
+						<ondown>3006</ondown>
+						<onleft>9000</onleft>
+						<onright>3006</onright>
+						<font>font13</font>
+						<scroll>false</scroll>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<reverse>yes</reverse>
+						<aligny>center</aligny>
+						<label>Select amount of capture channels</label>
 					</control>
 				</control>
 				<control type="grouplist" id="8000">
