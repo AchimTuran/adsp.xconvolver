@@ -41,8 +41,10 @@ typedef enum CAPTURE_SOURCES
 
 typedef struct 
 {
-  std::string name;
+  std::string       name;
   std::vector<uint> sampleFrequencies;
+  uint              maxChannels;
+  uint              defaultSampleFrequency;
 } CaptureDevice_t;
 
 typedef std::map<std::string, CAPTURE_SOURCES> CCaptureDeviceSourceList_t;
